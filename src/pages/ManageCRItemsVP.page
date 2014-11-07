@@ -1,0 +1,466 @@
+<!-- 
+********************************************************************
+Name : ManageCRItems1
+Created By : Hari Prakash
+Created Date : 22 Jan 2014
+Purpose : Apex Page to Manage CRItems from Button click on CR Detail
+*********************************************************************
+ -->
+ 
+<apex:page Controller="ManageCRItemsCtrl"   sidebar="false" id="CExPage" showheader="true" tabstyle="CR_Items__c">
+
+    <script type="text/javascript" src="/soap/ajax/20.0/connection.js"></script>
+    <script type="text/javascript" src="/soap/ajax/20.0/apex.js"></script>
+
+    <apex:includeScript value="{!URLFOR($Resource.JQueryUI1103, '/js/jquery-1.9.1.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.JQueryUI1103, '/js/jquery-ui-1.10.3.custom.min.js')}"/>
+    <!--
+    <apex:includeScript value="{!URLFOR($Resource.select2, 'select2-3.4.5/select2.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.select2, 'select2-3.4.5/select2.css')}"/>
+    
+
+    <script type="text/javascript" language="javascript">
+    var j$ = jQuery.noConflict();
+    j$(document).ready(function(){   
+    j$('.SelOpt').select2({dropdownAutoWidth : true});
+    });
+    </script>
+    -->
+
+    <style type="text/css">
+        body.wait, body.wait * { cursor: wait !important; }
+     </style>
+
+    <script language="JavaScript" type="text/javascript">
+        function CloseAndRefresh() {
+            window.parent.location.href="/{!$CurrentPage.parameters.id}"; 
+            self.close();
+        }
+    </script>
+
+    <script language="javascript" type="text/javascript">
+
+        var j$ = jQuery.noConflict();
+
+        //This is for the busyCursor
+        var busyCursorOn = function() {
+            j$('.button').attr("disabled", "disabled");
+            j$('body').addClass('wait');
+        };
+
+        var busyCursorOff = function() {
+            j$('.button').removeAttr('disabled');
+            j$('body').removeClass('wait');
+        };
+    
+        // This script assists the search bar functionality
+        // It will execute a search only after the user has stopped typing for more than 1 second
+        // To raise the time between when the user stops typing and the search, edit the following variable:
+        
+        var waitTime = 1;   //Set the the wait time to 1 seconds 
+        var countDown = waitTime+1;
+        var started = false;
+        
+        function resetTimer() {        
+            countDown=waitTime+1; //reset the countDown to waitTime
+            
+            if(started==false) {
+                started=true;
+                runCountDown();
+            }
+        }
+        
+        function runCountDown() {        
+            countDown--;
+            
+            if(countDown <= 0) {
+                fetchResults();
+                started = false;
+            } else {
+                window.setTimeout(runCountDown, 1000);
+            }
+        }
+
+        function updateSelected(SelectedID) {
+            document.getElementById(SelectedID).value = true;
+        } 
+ 
+    </script>
+
+<apex:form >
+    <apex:actionStatus id="busyCursor" onStart="busyCursorOn()" onStop="busyCursorOff()"/>
+    <apex:actionStatus id="statusProcessing" startText="Processing Request..."/>
+    <apex:pageBlock title="Manage Change Request">
+        
+        <apex:pageBlockSection columns="1" id="idSearchSection">
+        <apex:pageMessages />
+
+            <!--
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel for="metaData" value="Meta Data Type" />
+                <apex:selectList id="metaData" value="{!selectedMetaDataItem}" style="width:300px;" size="1" label="Meta Data">
+                    <apex:selectoptions value="{!selectOptionsMetaDataItems}"></apex:selectoptions>
+                    <apex:actionSupport action="{!refreshParentComponentList}" event="onchange" rerender="idSearchSection,idResultsSection" status="busyCursor"/>
+                </apex:selectList>
+            </apex:pageBlockSectionItem>
+            -->
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel for="metaData" value="Meta Data Type" />
+                <apex:inputField id="metaData" value="{!crItemObj.Type__c}" style="width:300px;">
+                    <apex:actionSupport action="{!refreshParentComponentList}" event="onchange" rerender="idSearchSection,idResultsSection,idSearchSectionPanel" status="busyCursor"/>
+                </apex:inputField>
+            </apex:pageBlockSectionItem>
+
+
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel for="parentComponent" value="Parent Component"/>
+                <apex:selectList id="parentComponent" value="{!selectedParentItem}" style="width:300px;" size="1" label="Parent Component" disabled="{!(!hasParent)}" styleClass="SelOpt">
+                    <apex:selectoptions value="{!selectOptionsParentItems}"></apex:selectoptions>
+                    <apex:actionSupport action="{!refreshComponentList}" event="onchange" rerender="idSearchSection,idResultsSection,idSearchSectionPanel" status="busyCursor"/>
+                </apex:selectList>                        
+            </apex:pageBlockSectionItem>
+            <!--
+            <apex:pageBlockSectionItem helpText="{!$Label.AgreementSearchContentHelpText}">
+                <apex:outputLabel for="idComponentSearch" value="Component Search: " style="color:#3333CC;"/>
+                <apex:inputText id="idComponentSearch" size="50" value="{!componentSearchCriteria}" />
+            </apex:pageBlockSectionItem>
+            -->
+            
+        </apex:pageBlockSection>
+
+        <apex:outputPanel id="idSearchSectionPanel">
+            <apex:pageBlockSection columns="1" id="idResultsSection" title="Component Search Result Section"  rendered="{!showSearchSection}">
+                <!--
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Operator" for="OperatorType" />
+                        <apex:selectList id="OperatorType" value="{!operatorString}" size="1">
+                            <apex:selectOption itemValue="Contains" itemLabel="Contains"/>
+                            <apex:selectOption itemValue="Equals" itemLabel="Equals"/>
+                            <apex:selectOption itemValue="StartsWith" itemLabel="Starts With"/>
+                        </apex:selectList>                     
+                </apex:pageBlockSectionItem>
+                -->
+                <apex:actionRegion renderRegionOnly="false" immediate="true">
+                    <apex:actionFunction name="fetchResults" action="{!refreshFilteredResult}" reRender="searchResults,idSearchSectionPanel" status="busyCursor"/>
+                    <apex:outputText value="Operator" style="font-weight:Bold;padding-right:10px;"/> 
+                    <apex:selectList label="Operator" id="OperatorType" value="{!operatorString}" size="1">
+                        <apex:selectOption itemValue="Contains" itemLabel="Contains"/>
+                        <apex:selectOption itemValue="Equals" itemLabel="Equals"/>
+                        <apex:selectOption itemValue="StartsWith" itemLabel="Starts With"/>
+                        <apex:actionSupport action="{!refreshFilteredResult}" event="onchange" rerender="searchResults,idSearchSectionPanel" status="busyCursor"/>
+                    </apex:selectList>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <apex:outputText value="Value" style="font-weight:Bold;padding-right:10px;"/> 
+                    <!-- here we invoke the scripting to get out fancy 'no button' search bar to work -->
+                    <apex:inputText value="{!componentSearchString}" onkeydown="if(event.keyCode==13){this.blur();}else{resetTimer();}" style="width:200px"/>
+                    &nbsp;&nbsp;&nbsp;
+                    <i>
+                        <!-- actionStatus component makes it easy to let the user know when a search is underway -->
+                        <apex:actionStatus id="searchStatus" startText="Searching..." stopText=" "/>
+                    </i>
+                    <!-- We put up a warning if results exceed 20 rows -->
+                    <apex:outputPanel styleClass="fyi" rendered="{!overLimit}">
+                        <br/>
+                        Your search returned over 20 results, use a more specific search string if you do not see the desired Component.
+                        <br/>
+                    </apex:outputPanel>                
+                </apex:actionRegion>
+
+
+                <!--
+                <apex:pageBlock title="Component Section" id="resultTable">
+                
+                    <apex:pageBlockButtons >
+                        <apex:commandButton value="Add Selected" action="{!addSelected}" reRender="searchResults,idComponentPanel" status="busyCursor"/>
+                    </apex:pageBlockButtons>
+                -->
+
+                    <br/>
+                    <apex:outputText value="Your search did return any record." rendered="{!(!hasResults)}"/>
+                    <apex:outputPanel id="searchResults" rendered="{!hasResults}">
+                        <apex:pageMessages />
+                        <apex:commandButton value="Add Selected" action="{!addSelected}" reRender="idSearchSectionPanel,searchResults,idComponentPanel" status="busyCursor"/>
+
+                        <apex:pageBlockTable width="80%" align="center" value="{!listAvailableCRItems}" var="c" id="rows">
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:commandLink value="Select All" action="{!selectAllSearchSection}" rerender="searchResults" status="busyCursor"/>
+                                        <br/>
+                                        <apex:commandLink value="Deselect All" action="{!deSelectAllSearchSection}" rerender="searchResults" status="busyCursor"/>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:inputCheckbox value="{!c.isSelected}"/>
+                            </apex:column>
+                            <apex:column headervalue="Display Name">
+                                <apex:outputText value="{!c.displayName}"/>
+                            </apex:column>
+                            <!--
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Full_Name__c.Label}">
+                                <apex:outputField value="{!c.item.Full_Name__c}"/>
+                            </apex:column>
+                            -->
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Type__c.Label}">
+                                <apex:outputField value="{!c.item.Type__c}"/>
+                            </apex:column>
+
+                            <apex:column headerValue="{!$ObjectType.CR_Items__c.Fields.Component_Parent__c.Label}">
+                                <apex:outputField value="{!c.item.Component_Parent__c}"/>
+                            </apex:column>
+
+                            <!--
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Source__c.Label}">
+                                <apex:inputField value="{!c.item.Source__c}" required="false"/>
+                            </apex:column>
+
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.User_Story__c.Label}">
+                                <apex:inputField value="{!c.item.User_Story__c}" required="false"/>
+                            </apex:column>
+                            
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Project__c.Label}">
+                                <apex:inputField value="{!c.item.Project__c}" required="false" />
+                            </apex:column>
+
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Status__c.Label}">
+                                <apex:inputField value="{!c.item.Status__c}" required="false" />
+                            </apex:column>
+
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Code_Reviewed__c.Label}">
+                                <apex:inputField value="{!c.item.Code_Reviewed__c}" required="false" />
+                            </apex:column>
+
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Is_API_Renamed__c.Label}">
+                                <apex:inputField value="{!c.item.Is_API_Renamed__c}" required="false" />
+                            </apex:column>
+
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Is_Update__c.Label}">
+                                <apex:inputField value="{!c.item.Is_Update__c}" required="false" />
+                            </apex:column>
+
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Checkin_Id__c.Label}">
+                                <apex:inputField value="{!c.item.Checkin_Id__c}" required="false" style="width:100px;"/>
+                            </apex:column>
+
+                            <!--
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Comment__c.Label}">
+                                <apex:inputField value="{!c.item.Comment__c}" required="false" />
+                            </apex:column>
+                            ->
+
+                            <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Requestor__c.Label}">
+                                <apex:outputField value="{!c.item.Requestor__c}" />
+                            </apex:column>
+                            -->
+
+                        </apex:pageBlockTable>
+                    </apex:outputPanel>
+                <!--    
+                </apex:pageBlock>
+                -->
+
+            </apex:pageBlockSection>
+        </apex:outputPanel>
+    
+
+        <apex:outputPanel id="idComponentPanel">
+            <apex:pageBlockSection columns="1" id="idSelectedComponent" title="Selected Component Section">
+                <apex:pageMessages rendered="true" id="msg2" />
+                <apex:outputPanel id="idFilterMassUpdatePanel">
+                    <apex:commandLink value="Show Filter/Mass Update Section"
+                        rerender="idFilterMassUpdatePanel" action="{!doShowHideFilters}"
+                        rendered="{!NOT(showFilters)}" status="busyCursor"/>
+                    <apex:commandLink value="Hide Filter/Mass Update Section"
+                        rerender="idFilterMassUpdatePanel" action="{!doShowHideFilters}"
+                        rendered="{!showFilters}" status="busyCursor"/>
+                    <apex:pageBlockSection columns="1" id="idFilterUpdateSection" rendered="{!showFilters}">
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel for="Field" value="Field"/>
+                            <apex:selectList id="Field" value="{!selectedField}" style="width:300px;" size="1" styleClass="SelOpt">
+                                <apex:selectoptions value="{!selectOptionsFields}"></apex:selectoptions>
+                                <apex:actionSupport action="{!refreshSearchField}" event="onchange" rerender="idFilterMassUpdatePanel" status="busyCursor"/>
+                            </apex:selectList>                        
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem rendered="{!selectedField != null}">
+                            <apex:outputLabel for="fieldValue" value="Field Value" />
+                            <apex:outputPanel >
+                                <apex:outputPanel rendered="{!selectedField == 'Requestor__c'}" >
+                                    <apex:inputField value="{!crItemFilterObj.Requestor__c}" style="width:300px;"/>
+                                    <apex:commandLink value="Myself" action="{!selectFilterOwner}" rerender="idFilterMassUpdatePanel" status="busyCursor"/>
+                                </apex:outputPanel>
+                                <apex:inputField rendered="{!selectedField == 'Type__c'}" value="{!crItemFilterObj.Type__c}" style="width:300px;"/>
+                                <apex:inputField rendered="{!selectedField == 'Status__c'}" value="{!crItemFilterObj.Status__c}" style="width:300px;"/>
+                                <apex:inputField rendered="{!selectedField == 'Source__c'}" value="{!crItemFilterObj.Source__c}" style="width:300px;"/>
+                                <apex:inputField rendered="{!selectedField == 'Project__c'}" value="{!crItemFilterObj.Project__c}" style="width:300px;"/>
+                                <apex:inputField rendered="{!selectedField == 'Checkin_Id__c'}" value="{!crItemFilterObj.Checkin_Id__c}" style="width:300px;"/>
+                                <apex:inputField rendered="{!selectedField == 'User_Story__c'}" value="{!crItemFilterObj.User_Story__c}" style="width:300px;"/>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:commandButton value="Filter Records" action="{!filterRecords}" reRender="idComponentPanel" status="busyCursor"/>
+                    </apex:pageBlockSection>
+
+                    <br/>
+
+                    <apex:pageBlockSection columns="1" id="idMassUpdateSection" rendered="{!showFilters}">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel for="Field" value="Field Update"/>
+                            <apex:selectList id="Field" value="{!selectedFieldUpdate}" style="width:300px;" size="1" styleClass="SelOpt">
+                                <apex:selectoptions value="{!selectOptionsFieldsUpdate}"></apex:selectoptions>
+                                <apex:actionSupport action="{!refreshMassUpdateField}" event="onchange" rerender="idFilterMassUpdatePanel" status="busyCursor"/>
+                            </apex:selectList>                        
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem rendered="{!selectedFieldUpdate != null}">
+                            <apex:outputLabel for="fieldValue" value="Field Update Value" />
+                            <apex:outputPanel >
+                                <apex:outputPanel rendered="{!selectedFieldUpdate == 'Requestor__c'}" >
+                                    <apex:inputField value="{!crItemForUpdate.Requestor__c}" style="width:300px;"/>
+                                    <apex:commandLink value="Myself" action="{!selectUpdateOwner}" rerender="idFilterMassUpdatePanel" status="busyCursor"/>
+                                </apex:outputPanel>
+                                <apex:inputField rendered="{!selectedFieldUpdate == 'Status__c'}" value="{!crItemForUpdate.Status__c}" style="width:300px;"/>
+                                <apex:inputField rendered="{!selectedFieldUpdate == 'Source__c'}" value="{!crItemForUpdate.Source__c}" style="width:300px;"/>
+                                <apex:inputField rendered="{!selectedFieldUpdate == 'Project__c'}" value="{!crItemForUpdate.Project__c}" style="width:300px;"/>
+                                <apex:inputField rendered="{!selectedFieldUpdate == 'Checkin_Id__c'}" value="{!crItemForUpdate.Checkin_Id__c}" style="width:300px;"/>
+                                <apex:inputField rendered="{!selectedFieldUpdate == 'User_Story__c'}" value="{!crItemForUpdate.User_Story__c}" style="width:300px;"/>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <br/>
+                        <apex:commandButton value="Mass Update Selected" action="{!massUpdateSelected}" reRender="idComponentPanel" status="busyCursor"/>
+                        <apex:commandButton value="Mass Update All Components" action="{!massUpdateAllCRItems}" reRender="idComponentPanel" status="busyCursor"/>
+                        
+                        <!--
+                        <apex:pageBlockSectionItem rendered="{!selectedField == 'Status__c'}">
+                            <apex:outputLabel for="fieldValue" value="Field Value" />
+                            <apex:inputField id="fieldValue" value="{!crItemFilterObj.Status__c}" style="width:300px;"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem rendered="{!selectedField == 'Requestor__c'}">
+                            <apex:outputLabel for="fieldValue" value="Field Value" />
+                            <apex:inputField id="fieldValue" value="{!crItemFilterObj.Requestor__c}" style="width:300px;"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem rendered="{!selectedField == 'Type__c'}">
+                            <apex:outputLabel for="fieldValue" value="Field Value" />
+                            <apex:inputField id="fieldValue" value="{!crItemFilterObj.Type__c}" style="width:300px;"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem rendered="{!selectedField == 'User_Story__c'}">
+                            <apex:outputLabel for="fieldValue" value="Field Value" />
+                            <apex:inputField id="fieldValue" value="{!crItemFilterObj.User_Story__c}" style="width:300px;"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem rendered="{!selectedField == 'Project__c'}">
+                            <apex:outputLabel for="fieldValue" value="Field Value" />
+                            <apex:inputField id="fieldValue" value="{!crItemFilterObj.Project__c}" style="width:300px;"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem rendered="{!selectedField == 'Checkin_Id__c'}">
+                            <apex:outputLabel for="fieldValue" value="Field Value" />
+                            <apex:inputField id="fieldValue" value="{!crItemFilterObj.Checkin_Id__c}" style="width:300px;"/>
+                        </apex:pageBlockSectionItem>
+                        -->
+                    </apex:pageBlockSection>
+                </apex:outputPanel>
+
+                <apex:pageBlock >
+                    <apex:pageBlockButtons location="top">
+                        <apex:commandButton value="Delete Selected" action="{!deleteSelected}" rerender="idComponentPanel" status="busyCursor"/>
+                        <apex:commandButton value="Copy All to Main Release" action="{!moveAllToReleaseCR}" rerender="idComponentPanel" status="busyCursor" rendered="{!(!isReleaseCR)}"/>
+                        <apex:commandButton value="Copy Selected to Main Release" action="{!moveSelectedToReleaseCR}" rerender="idComponentPanel" status="busyCursor" rendered="{!(!isReleaseCR)}"/>
+                        <apex:commandButton action="{!save}" value="Update"  rerender="rows,msg2" status="busyCursor"/>
+                        <apex:commandButton oncomplete="javascript:CloseAndRefresh()" value="Close" immediate="true" status="busyCursor"/>
+                    </apex:pageBlockButtons>
+                    
+                    <apex:pageBlockTable align="center" value="{!listSelectedCRItems}" var="c" id="resultTable" >
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:outputPanel >
+                                    <apex:commandLink value="Select All" action="{!selectAll}" rerender="resultTable" status="busyCursor"/>
+                                    <br/>
+                                    <apex:commandLink value="Deselect All" action="{!deselectAll}" rerender="resultTable" status="busyCursor"/>
+                                </apex:outputPanel>
+                            </apex:facet>
+                            <apex:inputCheckbox value="{!c.isSelected}"/>
+                        </apex:column>
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Type__c.Label}">
+                            <apex:outputField value="{!c.item.Type__c}"/>
+                        </apex:column>
+
+                        <apex:column headerValue="{!$ObjectType.CR_Items__c.Fields.Component_Parent__c.Label}">
+                            <apex:outputField value="{!c.item.Component_Parent__c}"/>
+                        </apex:column>
+
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Component_Name__c.Label}">
+                            <apex:outputField value="{!c.item.Component_Name__c}"/>
+                        </apex:column>
+
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Source__c.Label}">
+                            <apex:inputField value="{!c.item.Source__c}" required="false"/>
+                        </apex:column>
+
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.User_Story__c.Label}">
+                            <apex:inputField value="{!c.item.User_Story__c}" required="false" style="width:80px;"/>
+                        </apex:column>
+                        
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Project__c.Label}">
+                            <apex:inputField value="{!c.item.Project__c}" required="false" style="width:80px;"/>
+                        </apex:column>
+
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Status__c.Label}">
+                            <apex:inputField value="{!c.item.Status__c}" required="false" />
+                        </apex:column>
+
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Code_Reviewed__c.Label}">
+                            <apex:inputField value="{!c.item.Code_Reviewed__c}" required="false" />
+                        </apex:column>
+
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Is_API_Renamed__c.Label}">
+                            <apex:inputField value="{!c.item.Is_API_Renamed__c}" required="false" />
+                        </apex:column>
+
+                        <!--
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Checkin_Id__c.Label}">
+                            <apex:inputField value="{!c.item.Is_Update__c}" required="false" />
+                        </apex:column>
+                        -->
+                        
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Checkin_Id__c.Label}">
+                            <apex:inputField value="{!c.item.Checkin_Id__c}" required="false" style="width:100px;"/>
+                        </apex:column>
+
+                        <!--
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Comment__c.Label}">
+                            <apex:inputField value="{!c.item.Comment__c}" required="false" />
+                        </apex:column>
+                        -->
+
+                        <apex:column headervalue="{!$ObjectType.CR_Items__c.Fields.Requestor__c.Label}">
+                            <apex:outputField value="{!c.item.Requestor__c}" />
+                        </apex:column>
+
+                    </apex:pageBlockTable>
+
+                    <apex:pageBlockButtons >
+                        <apex:outputPanel id="paginationButtons">
+                            <apex:outputText value="({!pageStartIndex}-{!pageEndIndex} out of {!totalRowCount}) " />
+                            <apex:commandButton action="{!firstPage}" title="firstPage" value="<<First Page" 
+                                disabled="{!(!hasPreviousPage)}" reRender="idSelectedComponent" status="busyCursor"/>
+                            <apex:commandButton action="{!previousPage}" title="previousPage" value="<Previous Page" 
+                                disabled="{!(!hasPreviousPage)}" reRender="idSelectedComponent" status="busyCursor"/>
+                            
+                            <apex:outputText value=" (Page {!CurrentPageNumber} out of {!TotalPages}) " style="font-style:bold"/>
+                                 
+                            <apex:commandButton action="{!nextPage}" title="nextPage" value="Next Page>"
+                                disabled="{!NOT(hasNextPage)}" reRender="idSelectedComponent" status="busyCursor"/>
+                            <apex:commandButton action="{!lastPage}" title="lastPage" value="Last Page>>"
+                                disabled="{!NOT(hasNextPage)}" reRender="idSelectedComponent" status="busyCursor"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockButtons>
+                </apex:pageBlock>
+            </apex:pageBlockSection>
+        </apex:outputPanel>
+    </apex:pageblock>
+</apex:form>
+</apex:page>

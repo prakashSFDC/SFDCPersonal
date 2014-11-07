@@ -1,0 +1,46 @@
+<apex:page standardController="Opportunity"    extensions="CoverageController" contenttype="application/vnd.ms-excel">
+     <apex:dataTable value="{!accs}" var="acc" rows="1000" rendered="{!slcAnalysis=='Account'}">
+         <apex:column >
+             <apex:facet name="header">Name</apex:facet>
+             <apex:outputText value="{!acc.name}"/>
+         </apex:column>
+         <apex:column >
+             <apex:facet name="header">Account Subtype</apex:facet>
+             <apex:outputText value="{!acc.Account_Subtype_M__c}"/>
+         </apex:column>
+        <!--- <apex:column >
+             <apex:facet name="header">Qualification Type</apex:facet>
+             <apex:outputText value="{!acc.Qualification_Type__c}"/>
+         </apex:column>--->
+     </apex:dataTable>
+     <apex:dataTable value="{!opps}" var="opp" rows="1000" rendered="{!slcAnalysis=='Opportunity'}">
+         <apex:column >
+             <apex:facet name="header">Name</apex:facet>
+             <apex:outputText value="{!opp.name}"/>
+         </apex:column>
+         <apex:column >
+             <apex:facet name="header">Account Subtype</apex:facet>
+             <apex:outputText value="{!opp.Account.Account_Subtype_M__c}"/>
+         </apex:column>
+         <apex:column >
+             <apex:facet name="header">Stage</apex:facet>
+             <apex:outputText value="{!opp.StageName}"/>
+         </apex:column>
+    
+        <!--- <apex:column >
+             <apex:facet name="header">Vertical Market</apex:facet>
+             <apex:outputText value="{!opp.Account.Vertical_Market__c}"/>
+         </apex:column> --->
+        
+         <apex:column >
+             <apex:facet name="header">Primary Technology</apex:facet>
+             <apex:outputText value="{!opp.Primary_Technology__c}"/>
+         </apex:column>
+         <apex:column >
+             <apex:facet name="header">Amount</apex:facet>
+             <apex:outputText value="{!opp.Amount}"/>
+         </apex:column>
+     </apex:dataTable>
+</apex:page>
+<!---apex:facet name="header">Vertical Market</apex:facet>
+             <apex:outputText value="{!opp.Account.Vertical_Market__c}"/>--->

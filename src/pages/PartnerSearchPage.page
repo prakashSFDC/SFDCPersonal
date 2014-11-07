@@ -1,0 +1,19 @@
+<apex:page controller="PartnerSearchController" sidebar="false" showHeader="false" language="{!$CurrentPage.parameters.loc}" standardStylesheets="false">
+  <!-- Begin Default Content REMOVE THIS -->
+  <h1>Congratulations</h1>
+  This is your new Page
+<apex:form id="myform">
+
+<apex:tabPanel >
+    <apex:tab label="{!$Label.ChannelPartnerSearch}" name="ChannelPartner" id="CPSearch">
+    </apex:tab>
+    <apex:tab label="{!$Label.DistributorSearch}" name="Distributor" id="DistSearch">
+    </apex:tab>
+    <apex:tab label="{!$Label.FederalSearch}" name="Federal" id="FedSearch">
+    </apex:tab>
+    <apex:tab label="{!$Label.NameSearch}" name="NameSearch" id="NameSearch">
+    </apex:tab>
+    
+</apex:tabPanel>
+</apex:form>
+</apex:page>

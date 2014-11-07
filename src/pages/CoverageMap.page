@@ -1,0 +1,532 @@
+<apex:page id="pageForm"  standardController="Opportunity"    extensions="CoverageController" showHeader="true" >
+    <apex:includeScript value="{!URLFOR($Resource.coveragemap, 'svgweb/svg.js')}" />
+    <apex:form id="form">
+        <apex:pageBlock id="mapBlock" title="Map">
+            <apex:outputPanel layout="block" id="mapCanvas"
+                style="height: 600px; border: 1px solid black;" />
+        </apex:pageBlock>
+        <apex:pageBlock id="options" title="Options">
+            <apex:pageBlockSection id="global" title="Global Options">
+                <apex:pageBlockSectionItem id="territoryBlock">
+                    <apex:outputLabel value="Territory" for="territory" />
+                    <apex:selectList value="{!territory}" id="territory" size="1"
+                        onchange="refreshOptions()">
+                        <apex:selectOptions value="{!territories}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="mapOptionsBlock">
+                    <apex:outputLabel value="Map Options" for="mapOptions" />
+                    <apex:selectList value="{!mapOption}" id="mapOptions" size="1">
+                        <apex:selectOptions value="{!mapOptions}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="accountTypeBlock">
+                    <apex:outputLabel value="Account Type" for="accountType" />
+                    <apex:selectList value="{!accountType}" id="accountType" size="1">
+                        <apex:selectOptions value="{!accountTypes}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="analisysBlock">
+                    <apex:outputLabel value="Analysis" for="analisys" />
+                    <apex:selectList id="analisys" size="1" value="{!slcAnalysis}"
+                        onchange="refreshOptions()">
+                        <apex:selectOptions value="{!analisys}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+            
+        
+                
+                
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" title="Account Options"
+                rendered="{!slcAnalysis=='Account'}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Certification Level" for="accLevel" />
+                    <apex:panelGroup >
+                        <apex:commandLink onclick="setAllCheckBoxes('{!$Component.accLevel}', true)"
+                            rerender="process">Check All</apex:commandLink>
+                             &nbsp;
+                             <apex:commandLink onclick="setAllCheckBoxes('{!$Component.accLevel}', false)"
+                            rerender="process">Uncheck All</apex:commandLink>
+                        <apex:selectCheckboxes value="{!certificationLevel}" id="accLevel">
+                            <apex:selectOptions value="{!accLevels}" />
+                        </apex:selectCheckboxes>
+                        
+                    </apex:panelGroup>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Track" for="accTrack" />
+                    <apex:panelGroup >
+                        <apex:commandLink onclick="setAllCheckBoxes('{!$Component.accTrack}', true)"
+                            rerender="process">Check All</apex:commandLink>
+                             &nbsp;
+                             <apex:commandLink onclick="setAllCheckBoxes('{!$Component.accTrack}', false)"
+                            rerender="process">Uncheck All</apex:commandLink>
+                        <apex:selectCheckboxes value="{!accTrack}" id="accTrack"
+                            styleClass="makeRows">
+                            <apex:selectOptions value="{!tracks}" />
+                        </apex:selectCheckboxes>
+                    </apex:panelGroup>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" title="Opportunities Options"
+                rendered="{!slcAnalysis=='Opportunity'}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Stage" for="oppStage" />
+                    <apex:selectList value="{!oppStage}" id="oppStage" size="1">
+                        <apex:selectOptions value="{!oppStages}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <!---<apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Industry" for="oppIndustry" />
+                    <apex:selectList value="{!oppIndustry}" id="oppIndustry" size="1">
+                        <apex:selectOptions value="{!oppIndustries}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>--->
+                <apex:pageBlockSection title="LookUp Section" columns="4">
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Lookup to an Account" for="theLookup"/>
+                <apex:inputField id="theLookup" value="{!Opportunity.AccountId}"/>
+              </apex:pageBlockSectionItem>
+              <!---apex:pageBlockSectionItem >
+                <apex:outputLabel value="Accounts of RecordType " for="theLookup1"/>
+                <apex:inputField id="theLookup1" value="{!Opportunity.Account_Test_1__c}"/>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Accounts of Partner Type is Partner" for="theLookup2"/>
+                <apex:inputField id="theLookup2" value="{!Opportunity.Account_Test_2__c}"/>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Accounts of Partner Type is Distributor" for="theLookup3"/>
+                <apex:inputText id="theLookup3" value="{!AcctName.Account__c}"/>
+              </apex:pageBlockSectionItem>--->
+            </apex:pageBlockSection>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Track" for="oppTrack" />
+                    <apex:panelGroup >
+                        <apex:commandLink onclick="setAllCheckBoxes('{!$Component.oppTrack}', true)"
+                            rerender="process">Check All</apex:commandLink>
+                             &nbsp;
+                             <apex:commandLink onclick="setAllCheckBoxes('{!$Component.oppTrack}', false)"
+                            rerender="process">Uncheck All</apex:commandLink>
+                        <apex:selectCheckboxes value="{!oppTrack}" id="oppTrack"
+                            styleClass="makeRows">
+                            <apex:selectOptions value="{!tracks}" />
+                        </apex:selectCheckboxes>
+                    </apex:panelGroup>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+                 <apex:commandbutton value="Print Values" action="!{TestPrintvalues}"/>   
+                <apex:commandButton value="Apply" onclick="resetResults()"
+                    oncomplete="drawMarkers()" action="{!apply}"
+                    rerender="jsvalues,information" status="process" />
+                <apex:commandButton value="Print" onclick="window.print()"
+                    rerender="process" />
+                <apex:actionStatus id="process" startText="(processing..)" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        <apex:pageBlock id="information" title="Information">
+            <apex:pageBlockSection title="Summary">
+                <apex:pageBlockSectionItem id="summaryBlock">
+                    <apex:outputLabel value="Markers" for="markers" />
+                    <apex:outputLabel value="{!markers}" for="markers" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="amountBlock"
+                    rendered="{!slcAnalysis=='Opportunity'}">
+                    <apex:outputLabel value="Amount" for="amount" />
+                    <apex:outputText id="amount"
+                        value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!amount}" />
+                    </apex:outputText>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!dataSource!=''}">
+                    <apex:outputLabel value="Data Source" for="dataSource" />
+                    <apex:outputText id="dataSource" value="{!dataSource}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" title="Legend"
+                rendered="{!legendName!=''}">
+                <apex:outputPanel layout="block"
+                    style="margin-left:auto;margin-right:auto;">
+                    <apex:image id="theImage"
+                        value="{!URLFOR($Resource.coveragemap, legendName)}" />
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" title="Graphics"
+                rendered="{!graphicName!=''}">
+                <apex:outputPanel layout="block">
+                    <apex:image id="theImage"
+                        value="{!URLFOR($Resource.coveragemap, graphicName)}" />
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection id="tableData" columns="1" title="Results"
+                rendered="{!showResults}">
+                <apex:pageBlockTable value="{!accs}" var="acc"
+                    first="{!currentIndex}" rows="25"
+                    rendered="{!slcAnalysis=='Account'}">
+                    <apex:facet name="header">
+                        <apex:panelGroup >
+                            <apex:commandButton value="Previous" action="{!previous}"
+                                rerender="tableData" />
+                            <apex:commandButton value="Next" action="{!next}"
+                                rerender="tableData" />
+                            <apex:commandButton value="Export to Excel"
+                                action="{!exportExcel}" />
+                        </apex:panelGroup>
+                    </apex:facet>
+                    <apex:column >
+                        <apex:facet name="header">Name</apex:facet>
+                        <apex:outputText value="{!acc.name}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Account Subtype</apex:facet>
+                        <apex:outputText value="{!acc.Account_Subtype_M__c}" />
+                    </apex:column>
+                   <apex:column >
+                        <apex:facet name="header">Qualification Type</apex:facet>
+                        <apex:outputText value="{!acc.Qualification_Type__c}" />
+                    </apex:column>
+                    <apex:facet name="footer">
+                        <apex:panelGroup >
+                            <apex:commandButton value="Previous" action="{!previous}"
+                                rerender="tableData" />
+                            <apex:commandButton value="Next" action="{!next}"
+                                rerender="tableData" />
+                            <apex:commandButton value="Export to Excel"
+                                action="{!exportExcel}" />
+                        </apex:panelGroup>
+                    </apex:facet>
+                </apex:pageBlockTable>
+                <apex:pageBlockTable value="{!opps}" var="opp"
+                    first="{!currentIndex}" rows="25"
+                    rendered="{!slcAnalysis=='Opportunity'}">
+                    <apex:facet name="header">
+                        <apex:panelGroup >
+                            <apex:commandButton value="Previous" action="{!previous}"
+                                rerender="tableData" />
+                            <apex:commandButton value="Next" action="{!next}"
+                                rerender="tableData" />
+                            <apex:commandButton value="Export to Excel"
+                                action="{!exportExcel}" />
+                        </apex:panelGroup>
+                    </apex:facet>
+                    <apex:column >
+                        <apex:facet name="header">Name</apex:facet>
+                        <apex:outputText value="{!opp.name}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Account Subtype</apex:facet>
+                        <apex:outputText value="{!opp.Account.Account_Subtype_M__c}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Stage</apex:facet>
+                        <apex:outputText value="{!opp.StageName}" />
+                    </apex:column>
+                    <!---<apex:column >
+                        <apex:facet name="header">Vertical Market</apex:facet>
+                        <apex:outputText value="{!opp.Account.Vertical_Market__c}" />
+                    </apex:column>--->
+                    <apex:column >
+                        <apex:facet name="header">Primary Technology</apex:facet>
+                        <apex:outputText value="{!opp.Primary_Technology__c}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Amount</apex:facet>
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!opp.amount}" />
+                        </apex:outputText>
+                    </apex:column>
+                    <apex:facet name="footer">
+                        <apex:panelGroup >
+                            <apex:commandButton value="Previous" action="{!previous}"
+                                rerender="tableData" />
+                            <apex:commandButton value="Next" action="{!next}"
+                                rerender="tableData" />
+                            <apex:commandButton value="Export to Excel"
+                                action="{!exportExcel}" />
+                        </apex:panelGroup>
+                    </apex:facet>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection id="logger" title="Log" rendered="true">
+                <apex:inputTextarea rows="10" cols="120" value="{!logger}" />
+                <apex:commandButton value="Refresh" rerender="logger" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:inputHidden id="latitude" value="{!latitude}" />
+        <apex:inputHidden id="longitude" value="{!longitude}" />
+        <apex:inputHidden id="updateId" value="{!updateId}" />
+        <apex:actionFunction name="refreshOptions"
+            reRender="options,information,fixlayout" />
+        <apex:actionFunction name="updateLocation" action="{!updateLocation}"
+            reRender="" />
+    </apex:form>
+    <script type="text/javascript"
+        src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAnaKgEhcp4JgVYDg4KgeK7RSaxC92qWpvsfLMnPYt2YVHzVh2whRQGw5qB2qBdVQV-BhwNDkTZikaIg"></script>
+    <script type="text/javascript" src="/soap/ajax/18.0/connection.js"></script>
+    <script type="text/javascript" src="/soap/ajax/18.0/apex.js"></script>
+    <script type="text/javascript"
+        src="{!URLFOR($Resource.CoverageMap, 'overlaySVG.js')}"></script>
+    <apex:outputPanel id="fixlayout">
+        <script type="text/javascript">
+        
+            function layoutCheckboxes() {
+               var tables = document.getElementsByTagName("table");
+               for (var i=0 ; i < tables.length ; i++) {
+                  if (tables[i].className == "makeRows")
+                     makeRows(tables[i], 6);
+               } 
+            }
+    
+            function makeRows(table, columnCount) {
+               var cells = table.rows[0].cells;
+               var cellCount = cells.length;
+               var rowCount = Math.ceil(cellCount/columnCount);
+              
+               for (var i=0; i < rowCount; i++)
+                  table.insertRow(0);
+                  
+               for (var i=0; i < cellCount; i++) {
+                  var row = Math.floor(i/columnCount);
+                  table.rows[row].appendChild(cells[i].cloneNode(true));
+               }
+               
+               table.deleteRow(rowCount);
+            }
+            
+            layoutCheckboxes();
+            
+        </script>
+    </apex:outputPanel>
+    <script type="text/javascript">
+    
+        window.onload = new function() {
+            map = null;
+            accs = [];
+            opps = [];
+            sforce.connection.sessionId = '{!$Api.Session_ID}';
+            if (GBrowserIsCompatible()) {
+                map = new GMap2(document.getElementById("{!$Component.pageForm.form.mapBlock.mapCanvas}"));
+                map.setCenter(new GLatLng(-9.449062,-84.199219), 3);
+                map.setUIToDefault();
+            }
+        };
+    </script>
+    <apex:outputPanel id="jsvalues">
+        <apex:repeat value="{!accs}" var="acc"
+            rendered="{!slcAnalysis=='Account'}">
+            <script type="text/javascript">
+                accs.push(["{!acc.Name}","{!acc.BillingStreet}","{!acc.BillingCity}","{!acc.BillingCountry}","{!acc.Qualification_Type__c}","{!TEXT(acc.Latitude__c)}","{!TEXT(acc.Longitude__c)}","{!acc.Id}"]);
+            </script>
+        </apex:repeat>
+        <apex:repeat value="{!opps}" var="opp"
+            rendered="{!slcAnalysis=='Opportunity'}">
+            <script type="text/javascript">
+                opps.push(["{!opp.Name}","{!opp.Account.BillingStreet}","{!opp.Account.BillingCity}","{!opp.Account.BillingCountry}","{!opp.Account.Latitude__c}","{!opp.Account.Longitude__c}","{!opp.Account.Id}","{!opp.Amount}","{!opp.Primary_Technology__c}"]);
+            </script>
+        </apex:repeat>
+        <script type="text/javascript">
+        
+            function resetResults() {
+                accs = [];
+                opps = [];
+            }
+            
+            function drawMarkers() {
+            
+                var mapOption = "{!mapOption}";
+                var territory = "{!territory}";
+                
+                
+                
+            
+                map.clearOverlays();
+                
+                if (territory=='Territory 1 - Mexico')
+                    map.setCenter(new GLatLng(21.616579,-100.195312), 5);
+                    
+                if (territory=='Territory 2 - Caricam')
+                    map.setCenter(new GLatLng(15.284185, -79.233398), 5);
+                
+                if (territory=='Territory 3 - Andean')
+                    map.setCenter(new GLatLng(2.899153, -72.553711), 5);
+                    
+                if (territory=='Territory 4 - Southern Cone')
+                    map.setCenter(new GLatLng(-39.774769,-67.5), 4);
+                
+                if (territory=='Territory 5 - Brazil')
+                    map.setCenter(new GLatLng(-12.7260, -66.0937), 4);
+                    
+                    
+                var pointSW = null;
+                var pointNE = null;
+                
+                if (mapOption && territory=='Territory 5 - Brazil') {
+                
+                    var pointSW = new GLatLng(-33.80,-73.98);
+                    var pointNE = new GLatLng(5.25,-34.75);
+                }
+            
+                if (mapOption && (territory=='Territory 4 - Southern Cone' || territory=='Territory 3 - Andean' || territory=='Territory 2 - Caricam' || territory=='Territory 1 - Mexico')) {
+                    var pointSW = new GLatLng(-56.00,-117.00);
+                    var pointNE = new GLatLng(33.00,-34.68);
+                }
+                
+                if (mapOption) {
+                
+                    var isIE = /*@cc_on!@*/false;
+                    if(isIE)
+                        map.addOverlay(new overlaySVG("{!URLFOR($Resource.CoverageMap, mapName+'.png')}", new GLatLngBounds( pointSW, pointNE)));
+                    else
+                    {
+                        
+                        map.addOverlay(new overlaySVG("{!URLFOR($Resource.CoverageMap, mapName+'.svg')}", new GLatLngBounds( pointSW, pointNE)));
+                    }
+                }
+                
+                if ("Account"=="{!slcAnalysis}")
+                   drawAccounts();
+                else
+                   drawOpportunities();
+            }
+            
+            function drawAccounts() {
+            
+           // alert('DrawAccs 1');
+            
+                if (accs.length>0) {
+                    var geocoder = new GClientGeocoder();
+                    var index=0;
+                    var nextAddress = function() {
+                        var name = accs[index][0];
+                        var billingStreet = accs[index][1];
+                        var billingCity = accs[index][2];
+                        var billingCountry = accs[index][3];
+                        var qualificationType = accs[index][4];
+                        
+                        //alert('DrawAccs 2'+ qualificationType );
+                        
+                        var latitude = accs[index][5];
+                        var longitude = accs[index][6];
+                        var id = accs[index][7];
+                        
+                        var placeMarker = function(latitude, longitude) {
+                            var markerIcon = new GIcon();
+                            markerIcon.iconSize = new GSize(16, 16);
+                            markerIcon.iconAnchor = new GPoint(5, 16);
+                            markerIcon.infoWindowAnchor = new GPoint(10, 1);
+
+                            switch(qualificationType) {                            
+                                                     
+                                case "Elite/Premium":
+                                    markerIcon.image = "{!URLFOR($Resource.CoverageMap, 'gold-pushpin.png')}";
+                                    break;
+                                case "Top Gun":
+                                    markerIcon.image = "{!URLFOR($Resource.CoverageMap, 'silver-pushpin.png')}";
+                                    break;
+                                default:
+                                    markerIcon.image = "{!URLFOR($Resource.CoverageMap, 'bronze-pushpin.png')}";
+                                    break;
+                            }
+                            
+                            var markerOptions = { icon: markerIcon };                                
+                            map.addOverlay(createMarker(new GLatLng(latitude,longitude), name, markerOptions));
+                        };
+                        
+                        if (latitude==null || latitude=='') {
+                            geocoder.getLocations(billingStreet + "," + billingCity + "," + billingCountry, function(locations) {
+                                var placemark = locations["Placemark"];
+                                if (placemark!=null) {
+                                    var location = placemark[0].Point.coordinates.slice(0, 2);
+                                    placeMarker(location[1],location[0]);
+                                    document.getElementById("{!$Component.pageForm.form.latitude}").value = location[1];
+                                    document.getElementById("{!$Component.pageForm.form.longitude}").value = location[0];
+                                    document.getElementById("{!$Component.pageForm.form.updateId}").value = id;
+                                    updateLocation();
+                                }
+                                if (++index < accs.length)
+                                    nextAddress();
+                            });
+                        } else {
+                            placeMarker(latitude, longitude);
+                            if (++index < accs.length)
+                                nextAddress();
+                        }
+                    };
+                    nextAddress();
+                }
+            }
+            
+            function drawOpportunities() {
+                if (opps.length>0) {
+                    var geocoder = new GClientGeocoder();
+                    var index=0;
+                    var nextAddress = function() {
+                        var name = opps[index][0];
+                        var billingStreet = opps[index][1];
+                        var billingCity = opps[index][2];
+                        var billingCountry = opps[index][3];
+                        var latitude = opps[index][4];
+                        var longitude = opps[index][5];
+                        var id = opps[index][6];
+                        var amount = opps[index][7];
+                        var industry = opps[index][8]; 
+                        var track = opps[index][9];
+                        
+                        var placeMarker = function(latitude, longitude) {
+                            var markerIcon = new GIcon();
+                            markerIcon.iconSize = new GSize(16, 16);
+                            markerIcon.iconAnchor = new GPoint(5, 16);
+                            markerIcon.infoWindowAnchor = new GPoint(10, 1);
+                            markerIcon.image = "{!URLFOR($Resource.CoverageMap, 'blue-pushpin.png')}";
+                            var markerOptions = { icon: markerIcon };
+                            var label = name+"<br>"+amount+"&nbsp;-&nbsp;"+track+"<br>"+industry;
+                            map.addOverlay(createMarker(new GLatLng(latitude,longitude), label, markerOptions));
+                        };
+                        
+                        if (latitude==null || latitude=='') {
+                            geocoder.getLocations(billingStreet + "," + billingCity + "," + billingCountry, function(locations) {
+                                var placemark = locations["Placemark"];
+                                if (placemark!=null) {
+                                    var location = placemark[0].Point.coordinates.slice(0, 2);
+                                    placeMarker(location[1],location[0]);
+                                    document.getElementById("{!$Component.pageForm.form.latitude}").value = location[1];
+                                    document.getElementById("{!$Component.pageForm.form.longitude}").value = location[0];
+                                    document.getElementById("{!$Component.pageForm.form.updateId}").value = id;
+                                    updateLocation();
+                                }
+                                if (++index < opps.length)
+                                    nextAddress();
+                            });
+                        } else {
+                            placeMarker(latitude, longitude);
+                            if (++index < opps.length)
+                                nextAddress();
+                        }
+                    };
+                    nextAddress();
+                }
+            }
+
+            function createMarker(point, message, markerOptions) {
+                var marker = new GMarker(point, markerOptions);
+                GEvent.addListener(marker, "click", function() {
+                    var myHtml = "<b>" + message + "</b>";
+                    map.openInfoWindowHtml(point, myHtml);
+                });
+                return marker;
+            }
+            
+            function setAllCheckBoxes(componentId, value) {
+                var table = document.getElementById(componentId);
+                var checkBoxes = table.getElementsByTagName("input");
+                for(var i = 0; i < checkBoxes.length; i++)
+                    checkBoxes[i].checked = value;
+            }
+            
+        </script>
+    </apex:outputPanel>
+       !{TestPrintvalues}
+</apex:page>

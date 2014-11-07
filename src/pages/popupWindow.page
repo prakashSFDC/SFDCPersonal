@@ -1,0 +1,87 @@
+<apex:page controller="popupWindowCtrl">
+    <apex:form id="myForm">
+        <apex:pageBlock id="enteredValues">
+            <b>Values Entered : </b><br /><br />
+            Name : {!someText} <br />
+            Emp Id : {!someNumber} <br />
+        </apex:pageBlock>
+        <apex:commandButton value="Show Pop up" action="{!showPopup}" rerender="tstpopup"/>
+ 
+        <apex:outputPanel id="tstpopup">
+        <apex:outputPanel id="backPanel" styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+            <table id="innertable">
+                <tr>
+                    <td colspan="2"><b>Enter Information  : </b><br /><br /></td>
+                </tr>
+                <tr>
+                    <td><apex:outputLabel value="Name   :  " /></td><td><apex:inputText id="textId" value="{!someText}" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><apex:outputLabel id="textErrorMsg" style="color:red;display:none;font-weight:bold;font-size:95%;">Name cant be blank!</apex:outputLabel></td>
+                </tr>
+                <tr> 
+                    <td><apex:outputLabel value="Emp No :  " /></td><td><apex:inputText id="numId" value="{!someNumber}" /></td>
+                </tr>
+                <tr>                    
+                    <td colspan="2"><apex:outputLabel id="numErrorMsg" style="color:red;display:none;font-weight:bold;font-size:95%;">Enter a valid number!</apex:outputLabel></td>
+                </tr>
+                <tr>                    
+                    <td colspan="2">
+                        <apex:commandButton value="Submit" action="{!closePopup}" rerender="tstpopup,enteredValues" onclick="if(!check()){return};" />
+                        <apex:commandButton value="Cancel" action="{!closePopup}" rerender="tstpopup,enteredValues" />
+                    </td>
+                </tr>                    
+                </table>
+            </apex:outputPanel>
+        </apex:outputPanel>
+ 
+    </apex:form>
+    <script>
+        function check(){
+            text = document.getElementById('{!$Component.myForm.textId}').value;
+            num = document.getElementById('{!$Component.myForm.numId}').value;
+            checkStatus = true;
+            if(text==null || text==""){
+                document.getElementById('{!$Component.myForm.textErrorMsg}').style.display='block';               
+                checkStatus=false;
+            }
+            else document.getElementById('{!$Component.myForm.textErrorMsg}').style.display='none';               
+            if(num==null || num=="" || isNaN(num)){
+                document.getElementById('{!$Component.myForm.numErrorMsg}').style.display='block';               
+                checkStatus=false;
+            }
+            else document.getElementById('{!$Component.myForm.numErrorMsg}').style.display='none';               
+            
+            return checkStatus;
+        }
+    </script>
+ 
+    <style type="text/css">
+        .custPopup{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 2;
+            left: 50%;
+            padding:10px;
+            position:relative;
+            left:50%;
+            width: 250px;
+            margin-left: -120px;
+            top:140px;
+        }
+        .popupBackground{
+            background-color:black;
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+    </style>
+</apex:page>

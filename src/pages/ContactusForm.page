@@ -1,0 +1,46 @@
+<apex:page StandardController="Student__c" extensions="StudentCtrl" showHeader="false" sidebar="false">
+  
+  <apex:form >
+  <div style="text-align:center;font-size:24px;font-family: Arial;background-color: #0099FF;padding-top:15px;padding-bottom:15px;">
+      {!$Label.Institute_Name}         
+  </div><br/><br/>
+  <div style="text-align:center;font-size:24px;font-family: Arial;">Contact us at +91-8095-724-625.</div>
+  
+  <apex:pageMessages id="errorPage"/>
+  
+  <apex:pageBlock mode="edit">
+      <apex:pageBlockSection id="idPBSec" columns="1">
+          <tabel>
+              <tr>
+              <td><apex:inputText value="{!Student__c.First_Name__c}"/></td>
+              </tr>          
+          
+              <tr>
+              <td><apex:inputText value="{!Student__c.Last_Name__c}"/></td>
+              </tr>
+                    
+          <tr>
+              <td><apex:inputText value="{!Student__c.Email__c}" /></td>
+          </tr>
+          
+          <tr>
+              <td><apex:inputText value="{!Student__c.Phone__c}" /></td>
+          </tr>          
+          
+          <tr>
+              <td><apex:inputText value="{!Student__c.Subject__c}" /></td>
+          </tr>
+          
+          <tr>
+              <td><apex:inputtextArea value="{!Student__c.Question_Comment__c}" rows="5" cols="100" /></td>
+         </tr>       
+         
+       </tabel>   
+      </apex:pageBlockSection>
+  </apex:pageBlock>
+  
+  <div style="text-align:center;font-size:24px;font-family: Arial;">
+      <apex:commandButton value="Submit" action="{!doSubmit}" style="background:#0099FF"/>
+  </div>
+   </apex:form>
+</apex:page>

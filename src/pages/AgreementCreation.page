@@ -1,0 +1,18 @@
+<apex:page standardController="echosign_dev1__SIGN_Agreement__c" extensions="AgreementCreationController" tabstyle="Account" sidebar="false" showHeader="false">
+    <apex:form >
+        <apex:pageBlock mode="edit" title="Creation of Account">
+            <apex:pageMessages />
+            <apex:pageBlockSection >
+                <apex:inputField value="{!echosign_dev1__SIGN_Agreement__c.Name}"/>
+                <apex:inputField value="{!echosign_dev1__SIGN_Agreement__c.echosign_dev1__Account__c}"/>
+                <apex:inputField value="{!echosign_dev1__SIGN_Agreement__c.echosign_dev1__Recipient__c}"/>
+
+
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Submit" action="{!save}" />
+            </apex:pageBlockButtons>
+           
+        </apex:pageBlock>
+    </apex:form>
+    </apex:page>

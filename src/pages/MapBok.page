@@ -1,0 +1,75 @@
+<apex:page id="pageForm" controller="Bok" showHeader="false" sidebar="false">
+   <apex:includeScript value="{!URLFOR($Resource.Map, 'svgweb/svg.js')}" />
+    <apex:form id="form">
+        <apex:pageBlock id="mapBlock" title="Map">
+            <apex:outputPanel layout="block" id="mapCanvas"
+                style="height: 600px; border: 1px solid black;" />
+        </apex:pageBlock>
+        <apex:pageBlock id="values" title="values">            
+                 
+                  <apex:inputText id="location"  value="{!Location}" />
+                    <apex:inputHidden id="latitude" value="{!latitude}" />
+                    <apex:inputHidden id="longitude" value="{!longitude}" />
+
+         </apex:pageBlock>           
+                    
+                <apex:commandButton value="Apply"   onclick="abc();return false;"  />               
+              
+                    
+                    
+     </apex:form>  
+                
+    <script type="text/javascript"
+        src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=abcdefg"></script>   
+    
+    <script type="text/javascript">
+    
+    window.onload = new function() {
+            map = null;          
+            
+            if (GBrowserIsCompatible()) {
+                map = new GMap2(document.getElementById("{!$Component.pageForm.form.mapBlock.mapCanvas}"));
+                map.setCenter(new GLatLng(25.449062,80.199219), 4);
+                map.setUIToDefault();
+            }
+        };   
+    
+    function abc(){
+        alert('abc entered');       
+         var locationValue = document.getElementById("{!$Component.form.values.location}").value;
+         alert('location Value :'+locationValue );
+         var geocoder = new GClientGeocoder();     
+      geocoder.getLocations(locationValue , function(locations) {
+                                var placemark = locations["Placemark"];
+                                if (placemark!=null) {
+                                    var location = placemark[0].Point.coordinates.slice(0, 2);
+                                    placeMarker(location[1],location[0]);                                                                
+                                }
+                                
+                            });
+    var placeMarker = function(latitude, longitude) {
+    alert('Entered Place Marker');
+                            var markerIcon = new GIcon();
+                            markerIcon.iconSize = new GSize(16, 16);
+                            markerIcon.iconAnchor = new GPoint(5, 16);
+                            markerIcon.infoWindowAnchor = new GPoint(10, 1);
+                            markerIcon.image = "{!URLFOR($Resource.CoverageMap, 'blue-pushpin.png')}";                          
+                            var markerOptions = { icon: markerIcon }; 
+     alert('before Add OverLay');                                                      
+                            map.addOverlay(createMarker(new GLatLng(latitude,longitude),locationValue,markerOptions));
+    alert('End Place Marker');                      
+                        };                          
+
+    }
+    
+    function createMarker(point, message, markerOptions) {
+                var marker = new GMarker(point, markerOptions);
+                GEvent.addListener(marker, "click", function() {
+                    var myHtml = "<b>" + message + "</b>";
+                    map.openInfoWindowHtml(point, myHtml);
+                });
+                return marker;
+            }
+    </script> 
+    
+</apex:page>

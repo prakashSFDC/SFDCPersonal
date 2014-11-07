@@ -1,0 +1,53 @@
+<apex:page id="pageForm" sidebar="false" showHeader="false">   
+    <apex:form id="form">
+        <apex:pageBlock id="mapBlock" title="Map">
+            <apex:outputPanel layout="block" id="mapCanvas"
+                style="height: 600px; border: 1px solid black;" />
+        </apex:pageBlock>
+         <apex:commandButton value="Show Bermuda Triangle"   onclick="ShowTriangle();return false;"  />
+         <apex:commandButton value="Remove Bermuda Triangle"   onclick="RemoveTriangle();return false;"  />
+     </apex:form>  
+     
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>  
+  <script type="text/javascript" src="{!$Resource.USGSOverlay}"/> 
+  
+    <script type="text/javascript">    
+        window.onload = LoadMap();
+            function LoadMap() {
+                map = null;          
+                var myLatLng = new google.maps.LatLng(24.886436490787712, -70.2685546875);
+                var myOptions = {
+                zoom: 5,
+                center: myLatLng,
+                mapTypeId: google.maps.MapTypeId.TERRAIN
+                 };
+         
+                map = new google.maps.Map(document.getElementById("{!$Component.pageForm.form.mapBlock.mapCanvas}"),myOptions);            
+        };
+   function ShowTriangle(){ 
+   
+        var bermudaTriangle;    
+          var triangleCoords = [
+            new google.maps.LatLng(25.774252, -80.190262),
+            new google.maps.LatLng(18.466465, -66.118292),
+            new google.maps.LatLng(32.321384, -64.75737),
+            new google.maps.LatLng(25.774252, -80.190262)
+          ];
+            bermudaTriangle = new google.maps.Polygon({
+                paths: triangleCoords,
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#FF0000",
+                fillOpacity: 0.35
+          });
+            bermudaTriangle.setMap(map);     
+         }
+   
+   function RemoveTriangle(){              
+              map.setmap(null);       
+          }        
+    </script>  
+    
+</apex:page>

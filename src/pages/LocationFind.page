@@ -1,0 +1,20 @@
+<apex:page showHeader="false" sidebar="false">
+<form name="test">
+ <div id = "vins" align = "center"> 
+  <h1><b>Welcome to PathFinder</b></h1>
+  </div>
+Location Name: <input type = "text" id = "city" name= "city"/> <br></br><br></br>
+<input type = "button" value = "Find the Location" onClick="findLocation()" /> <br></br>
+</form>
+
+
+<script>
+function findLocation()
+{
+var cityName = document.test.city.value;
+//alert(cityName);
+window.open("http://maps.google.com/maps?f=d&saddr="+cityName,"_self");
+}
+</script>
+
+</apex:page>

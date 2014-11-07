@@ -1,0 +1,18 @@
+<apex:page controller="CFTController" showHeader="false" sidebar="false">
+  
+  <apex:form >
+  <div style="text-align:center;font-size:24px;font-family: Arial;background-color: #0099FF;padding-top:15px;padding-bottom:15px;">
+      {!$Label.Institute_Name}         
+  </div><br/><br/>
+  <div style="text-align:center;font-size:24px;font-family: Arial;">Contact us at +91-8095-724-625.</div><br/><br/>
+  
+  <apex:pageMessages id="errorPage"/> 
+  
+  <div style="text-align:center;font-size:24px;font-family: Arial;">
+      <apex:commandButton value="Login" action="{!doLogin}" /> &nbsp; &nbsp;
+      <apex:commandButton value="Signup" action="{!doSignup}"/>
+  </div>
+ 
+   </apex:form>
+   
+</apex:page>

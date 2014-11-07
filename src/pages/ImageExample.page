@@ -1,0 +1,12 @@
+<apex:page showHeader="false" sidebar="false" controller="ImageExampleCtrl">
+<apex:form >
+  <apex:image id="theImage" value="{!$Resource.FBText}" width="200" height="200"/><br/><br/>
+  <apex:commandButton value="Show Text" action="{!showText}" reRender="idText" status="searchStatus"/> 
+  <apex:actionStatus id="searchStatus" stopText="">
+    <apex:facet name="start">
+        <img src="/img/loading.gif" />                       
+    </apex:facet>
+  </apex:actionStatus>
+  <br/><br/>The Text in the Image is :- &nbsp; &nbsp; <apex:outputText id="idText" value="{!convertedText}"/>
+</apex:form>
+</apex:page>

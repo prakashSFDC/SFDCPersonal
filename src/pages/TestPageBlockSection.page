@@ -1,0 +1,45 @@
+<apex:page standardController="Account" wizard="true">
+    <apex:form >
+        <apex:pageBlock title="My Content">            
+            <apex:pageBlockSection title="Hi">
+            
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Program Term" for="programTerm" />
+                <apex:inputField value="{!account.name}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Program Term" for="programTerm" />
+                <apex:inputField value="{!account.site}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Program Term" for="programTerm" />
+                <apex:inputField value="{!account.type}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Program Term" for="programTerm" />
+                <apex:inputField value="{!account.accountNumber}"/>
+                </apex:pageBlockSectionItem>
+            
+            
+            
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Program Term" for="programTerm" />
+                <apex:inputField value="{!account.name}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Program Term" for="programTerm" />
+                <apex:inputField value="{!account.site}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Program Term" for="programTerm" />
+                <apex:inputField value="{!account.type}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Program Term" for="programTerm" />
+                <apex:inputField value="{!account.accountNumber}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

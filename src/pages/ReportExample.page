@@ -1,0 +1,7 @@
+<apex:page controller="ReportExample">
+<apex:pageBlock >
+<center>
+ <a href="/{!reportid}"> Click here to access the report </a>
+ </center>
+ </apex:pageBlock>
+</apex:page>

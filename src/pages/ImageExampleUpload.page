@@ -1,0 +1,17 @@
+<apex:page showHeader="false" sidebar="false" controller="ImageExampleUploadCtrl">
+<apex:form > <br/><br/>
+  <apex:inputfile id="abc" value="{!FileRecords}" filename="{!uploadedFileName}"/> <br/><br/>
+  <apex:commandButton value="Upload File" action="{!UploadFile}" status="searchStatus" /> <br/><br/>
+  
+  <apex:actionStatus id="searchStatus" stopText="">
+    <apex:facet name="start">
+        <img src="/img/loading.gif" />                       
+    </apex:facet>
+  </apex:actionStatus>
+  <br/><br/>The Text in the Image is :- &nbsp; &nbsp; <apex:outputText id="idText" value="{!convertedText}"/>
+</apex:form>
+<script type = "text/javascript">
+var fu1 = document.getElementById("abc");
+alert("You selected " + fu1.value);
+</script>
+</apex:page>

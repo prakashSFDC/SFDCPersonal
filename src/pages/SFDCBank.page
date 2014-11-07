@@ -1,0 +1,47 @@
+<apex:page showHeader="false" sidebar="false" controller="SFDCBankController">
+ <style>
+        .forms.columnar label {
+          float: left;
+          width: 325px;
+          text-align: right;
+          margin-right: 20px;
+        }
+        .forms.columnar1 label {
+          float: left;
+          width: 200px;
+          text-align: left;
+          margin-left: 0px;
+        }
+        .menu {
+            background-color: #c0a1c0;           
+            padding: 4px;           
+            font-family: verdana;
+            font-size: 18px;
+            }
+                        
+</style><br/><br/><br/>
+<apex:form styleClass="forms columnar" style="width:985px; margin:0 auto" id="theForm">        
+        <apex:pageBlock id="idBlock" >
+        <div class ="menu">
+            WELCOME TO BANK APPLICATION
+        </div><BR/>
+               <apex:commandButton value="New Transaction" action="{!doNewTransaction}" reRender="matchTable" status="searchStatus"/> &nbsp; &nbsp;
+               <apex:commandButton value="Check Single User History" action="{!checkSingleUserHistory}" status="searchStatus" reRender="matchTable,idBlock"/> &nbsp; &nbsp;
+               <apex:commandButton value="Add New User" action="{!addNewUser}" status="searchStatus" reRender="matchTable,idBlock"/> &nbsp; &nbsp;
+       <apex:outputpanel >
+        <apex:actionstatus id="searchStatus">
+            <apex:facet name="start">
+                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                       height: 100%;opacity:0.65;width:100%;"> 
+                    <div class="waitingHolder" style="top: 230px; width: 91px;">
+                        <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                        <span class="waitingDescription">Please Wait...</span>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionstatus>
+    </apex:outputpanel> 
+       
+    </apex:pageblock>
+    </apex:form>
+</apex:page>

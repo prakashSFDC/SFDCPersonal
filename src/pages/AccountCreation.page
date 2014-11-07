@@ -1,0 +1,22 @@
+<apex:page controller="NewAndExistingController" tabstyle="Account" sidebar="false" showHeader="false">
+    <apex:form >
+        <apex:pageBlock mode="edit" title="Creation of Account">
+            <apex:pageMessages />
+            <apex:pageBlockSection >
+                <apex:inputField value="{!Account.name}"/>
+                <apex:inputField value="{!Account.phone}"/>
+                <apex:inputField value="{!Account.industry}"/>
+                <apex:inputField value="{!Account.type}"/>
+                <apex:inputField value="{!Account.billingstreet}"/>
+                <apex:inputField value="{!Account.billingcity}"/>
+                <apex:inputField value="{!Account.billingcountry}"/>
+                <apex:inputField value="{!Account.AccountNumber}"/>
+
+
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Save" action="{!save}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+    </apex:page>

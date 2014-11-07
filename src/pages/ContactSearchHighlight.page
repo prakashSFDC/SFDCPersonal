@@ -1,0 +1,41 @@
+<apex:page controller="ContactSearchHighlight" showHeader="false" sidebar="false">
+<apex:sectionHeader title="Search Contacts" subtitle="Highlighter"/>
+<style type="text/css">
+h1{
+    font-size:16px;
+}
+.highlight_word{
+        background-color: PaleGreen;
+        font-weight:bold;
+        font-style:italic;
+}
+.searchbox{
+    border:1px solid #ccc;
+    font-family:verdana;
+    padding:10px;
+}
+.searchbox p{
+    text-transform: capitialize;
+}
+.hrstyle{
+    color: #f00;
+    background-color: #f00;
+    height: 1px;
+}
+</style>
+<apex:form >
+  <apex:inputtext value="{!srchArg}"/>
+  <apex:commandButton value="Search" action="{!search}"/>
+ </apex:form><br/>
+ <div class="searchbox">
+ <apex:repeat value="{!lstContact}" var="cnt">
+     <h1>{!cnt.Name}</h1>
+     <p><apex:outputText value="{!cnt.details__c}" escape="false" />
+         <div style="text-align:center;color:#ccc;">
+             -----------------------------------------------
+         </div>
+     </p>     
+     
+ </apex:repeat>
+ </div>
+</apex:page>

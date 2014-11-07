@@ -1,0 +1,27 @@
+<apex:page controller="CustomSettingExampleCtrl">
+   <apex:form >   
+   <apex:pageBlock >
+   <apex:pageBlockSection >
+      <apex:pageBlockSectionItem > 
+                    <apex:outputLabel >Region : </apex:outputLabel>
+                      <apex:selectList id="idRegion" size="1" onChange="refreshCountries(this.value)" value="{!region}">                              
+                            <apex:selectOptions value="{!RegionTypes}"/>                                                         
+                        </apex:selectList>                                      
+                </apex:pageBlockSectionItem> 
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection >
+          <apex:pageBlockSectionItem > 
+                    <apex:outputLabel >Country: </apex:outputLabel>
+                      <apex:selectList id="idCountryList" size="1" value="{!country}">                             
+                           <apex:selectOptions value="{!CountryTypes}"/>                                                       
+                        </apex:selectList>                                      
+                </apex:pageBlockSectionItem> 
+    </apex:pageBlockSection>  
+    </apex:pageBlock>
+    
+    <apex:actionFunction name="refreshCountries" rerender="idCountryList" >
+          <apex:param name="firstParam" assignTo="{!country}" value="" />
+      </apex:actionFunction>   
+    </apex:form>
+</apex:page>

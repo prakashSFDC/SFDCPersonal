@@ -1,0 +1,34 @@
+<apex:page id="testAllen" controller="testAllen">
+
+    <apex:includeScript value="{!$Resource.jqueryautocompletecssAdobe}"/>
+    <apex:form id="theForm" >
+    
+        <apex:pageBlock title="Accounts" id="pageBlock">
+            <table id="myTable"></table>
+            <input type="button" value="Add selected to myTable"  onClick="addAccountsToMyTable()" />
+            <apex:pageBlockTable value="{!DisplayAccount}" var="da" id="accountsTable">
+                <apex:column >
+                    <apex:facet name="header">Select</apex:facet>
+                    <apex:inputCheckbox styleClass="selected-checkbox" value="{!da.IsSelected}" />
+                    <apex:inputHidden value="{!da.account.Id}" id="hdnAccountId" />
+                </apex:column>
+                <apex:column >
+                    <apex:outputText styleClass="account-name" value="{!da.account.Name}" />
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+
+        <script type="text/javascript">         
+            function addAccountsToMyTable() {
+                $(".account-name").each(function() {
+                    var checkbox = $(this).closest('tr').find("input:checkbox:checked").val();
+                    if (checkbox) {
+                        var customerId = $(this).html();
+                        console.log(customerId);
+                    }
+                 });
+            }
+            
+        </script>
+    </apex:form>
+</apex:page>

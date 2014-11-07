@@ -1,0 +1,5 @@
+<apex:page showHeader="false" sidebar="false" language="fr-fr">
+    <apex:form >
+        <label><strong>{!$Label.Sample_Label_1}</strong></label>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,27 @@
+<apex:page id="pageForm"  standardController="Opportunity"  showHeader="true" sidebar="true" >   
+    <apex:form id="form">
+        <apex:pageBlock id="mapBlock" title="Map">
+            <apex:outputPanel layout="block" id="mapCanvas"
+                style="height: 600px; border: 1px solid black;" />
+        </apex:pageBlock>   
+         
+    </apex:form>
+    <script type="text/javascript"
+        src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAnaKgEhcp4JgVYDg4KgeK7RSaxC92qWpvsfLMnPYt2YVHzVh2whRQGw5qB2qBdVQV-BhwNDkTZikaIg">
+        </script>
+    <script type="text/javascript" src="/soap/ajax/18.0/connection.js"></script>
+    <script type="text/javascript" src="/soap/ajax/18.0/apex.js"></script>   
+   
+    <script type="text/javascript">
+    
+        window.onload = new function() {           
+            if (GBrowserIsCompatible()) {
+                map = new GMap2(document.getElementById("{!$Component.pageForm.form.mapBlock.mapCanvas}"));
+                 map.setMapType(G_SATELLITE_MAP);
+                map.setCenter(new GLatLng(-9.449062,-84.199219), 3);
+                map.setUIToDefault();
+            }
+        }
+    </script>  
+    
+        </apex:page>

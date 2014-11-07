@@ -1,0 +1,96 @@
+<apex:page StandardController="Feedback__c" extensions="FeedbackFormCtrl" showHeader="false" wizard="true">
+  
+  <apex:form >
+  <div style="text-align:center;font-size:24px;font-family: Arial;background-color: #0099FF;padding-top:15px;padding-bottom:30px;"><br/>
+       {!$Label.Institute_Name}
+  </div>  
+  <apex:pageBlock title="Feedback Form" />
+  
+  <apex:pageMessages id="errorPage"/>
+  
+  <apex:pageBlock mode="edit">
+      <apex:pageBlockSection id="idPBSec" columns="1">
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Name: </apex:outputLabel>
+              <apex:inputText value="{!Feedback__c.Student_Name__c}" size="40" required="true"/>
+          </apex:pageBlockSectionItem>
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Email: </apex:outputLabel>
+              <apex:inputText value="{!Feedback__c.Student_Email__c}" size="40" required="true"/>
+          </apex:pageBlockSectionItem>
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >On-line training atmosphere was conductive ? </apex:outputLabel>
+              <apex:outputPanel layout="block">
+              <apex:selectRadio value="{!Feedback__c.Training_Atmosphere__c}" id="trngAtms">
+                        <apex:selectOptions value="{!agreeOptions}" />
+              </apex:selectRadio>
+              </apex:outputPanel>
+          </apex:pageBlockSectionItem>
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Trainer effectively addressed your doubts? </apex:outputLabel>
+              <apex:selectRadio value="{!Feedback__c.Effectively_Clarified_Doubts__c}" id="trngAtms">
+                        <apex:selectOptions value="{!agreeOptions}" />
+              </apex:selectRadio>              
+          </apex:pageBlockSectionItem>          
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Trainer effectively presented course Content ? </apex:outputLabel>
+              <apex:selectRadio value="{!Feedback__c.Effectively_Presnted_Course_Content__c}" id="trngAtms">
+                        <apex:selectOptions value="{!agreeOptions}" />
+              </apex:selectRadio> 
+          </apex:pageBlockSectionItem>
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Will you recommend this trainer to a friend ? </apex:outputLabel>
+              <apex:selectRadio value="{!Feedback__c.Recommended_Trainer__c}" id="trngAtms">
+                        <apex:selectOptions value="{!likeOptions}" />
+              </apex:selectRadio> 
+          </apex:pageBlockSectionItem>
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >The specific objectives for this course was achieved ? </apex:outputLabel>
+              <apex:selectRadio value="{!Feedback__c.Course_Objective__c}" id="trngAtms">
+                        <apex:selectOptions value="{!agreeOptions}" />
+              </apex:selectRadio> 
+          </apex:pageBlockSectionItem>
+          
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >What you like about this course ? </apex:outputLabel>
+              <apex:inputTextarea value="{!Feedback__c.Like_about_the_course__c}" rows="4" cols="120" />
+          </apex:pageBlockSectionItem> <br/>         
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >What you don't like about this course ? </apex:outputLabel>
+              <apex:inputTextarea value="{!Feedback__c.Dont_like_about_this_course__c}" rows="4" cols="120" />
+          </apex:pageBlockSectionItem> <br/>
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Anything else would you like to comment about this course ? </apex:outputLabel>
+              <apex:inputTextarea value="{!Feedback__c.Comment_on_Overall_Course__c}" rows="4" cols="120" />
+          </apex:pageBlockSectionItem> <br/>
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Anything else would you like to comment about this Trainer ? </apex:outputLabel>
+              <apex:inputTextarea value="{!Feedback__c.Comment_on_Trainer__c}" rows="4" cols="120" />
+          </apex:pageBlockSectionItem> <br/>
+          <br/>
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Overall Rating of the course ?</apex:outputLabel>
+              <apex:selectRadio value="{!Feedback__c.Overall_Rating_on_Course__c}" id="trngAtms">
+                        <apex:selectOptions value="{!satisfyOptions}" />
+              </apex:selectRadio> 
+          </apex:pageBlockSectionItem>          
+          
+      </apex:pageBlockSection>
+  </apex:pageBlock>
+  
+  <div style="text-align:center;font-size:24px;font-family: Arial;">
+      <apex:commandButton value="Submit" action="{!doSubmit}" style="background:#FFAD33"/>
+  </div>
+   </apex:form>
+</apex:page>

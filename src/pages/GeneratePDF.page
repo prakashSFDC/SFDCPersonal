@@ -1,0 +1,37 @@
+<apex:page renderAs="pdf" standardController="Expenditures__c" extensions="RedirectForPDFCtrl" sidebar="false" showHeader="false">
+ 
+ <apex:form id="pbform"> 
+  <apex:pageBlock id="idBlock"  title="Welcome">  
+   <apex:pageBlockSection title="Signature Application" columns="1" collapsible="false" id="idPBS">   
+                
+                <apex:pageBlockSectionItem id="idPBSI1">
+                    <apex:outputLabel value="Owner of the Expense:"/>                   
+                        <apex:outputField value="{!Expenditures__c.Expense_Owner__c}" id="idIF1"/>                                     
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem id="idPBSI2">
+                    <apex:outputLabel value="Expense Type:"/>
+                    <apex:outputField value="{!Expenditures__c.Expense_Type__c}" id="idIF2"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem id="idPBSI3">
+                    <apex:outputLabel value="Amount:"/>
+                    <apex:outputField value="{!Expenditures__c.Expense_Amount__c}" id="idIF3"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem id="idPBSI4">
+                    <apex:outputLabel value="Expense Date:"/>
+                    <apex:outputField value="{!Expenditures__c.Expenditure_Date__c}" id="idIF4"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem id="idPBSI5">
+                    <apex:outputLabel value="Expense Description:"/>
+                    <apex:outputField value="{!Expenditures__c.Expense_Description__c}" id="idIF5"/>
+                </apex:pageBlockSectionItem>                
+                </apex:pageBlockSection> 
+  </apex:pageBlock>  <br/><br/>        
+  <table width="100%" style="border: 1px solid #000000">
+        <tr  style="border: 1px solid #000000"><td><apex:image url="{!imageURL}" id="thesignature" /><br/><apex:outputLabel value="Customer Signature" for="thesignature"/></td></tr>
+    </table> <br/><br/>
+ </apex:form>     
+</apex:page>

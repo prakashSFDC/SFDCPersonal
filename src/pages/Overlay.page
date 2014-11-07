@@ -1,0 +1,76 @@
+<apex:page controller="OverlayDemoController" sidebar="false" showHeader="false">
+<head>
+<c:Overlay style="processing" />
+</head>
+<apex:form >
+    <apex:actionStatus id="overlayStatus" onStart="showOverlay();" onstop="hideOverlay();"></apex:actionstatus>
+    <apex:sectionHeader title="Contact Save" subtitle="Overlay Demo" />
+    <apex:pageBlock id="pBlock">
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!saveRecord}" status="overlayStatus" value="Save" reRender="pBlock"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection >
+                <apex:inputField value="{!cnt.Account__c}" />
+                <apex:inputField value="{!cnt.Address_Line1__c}" />                
+                <apex:inputField value="{!cnt.Address_Line2__c}" />
+                <apex:inputField value="{!cnt.Phone__c}" />
+                <apex:inputField value="{!cnt.Fax__c}" />
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    <apex:pageBlock id="pBlock2">
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!saveRecord}" status="overlayStatus" value="Save" reRender="pBlock"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection >
+                <apex:inputField value="{!cnt.Account__c}" />
+                <apex:inputField value="{!cnt.Address_Line1__c}" />                
+                <apex:inputField value="{!cnt.Address_Line2__c}" />
+                <apex:inputField value="{!cnt.Phone__c}" />
+                <apex:inputField value="{!cnt.Fax__c}" />
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    
+    <apex:pageBlock id="pBlock3">
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!saveRecord}" status="overlayStatus" value="Save" reRender="pBlock"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection >
+                <apex:inputField value="{!cnt.Account__c}" />
+                <apex:inputField value="{!cnt.Address_Line1__c}" />                
+                <apex:inputField value="{!cnt.Address_Line2__c}" />
+                <apex:inputField value="{!cnt.Phone__c}" />
+                <apex:inputField value="{!cnt.Fax__c}" />
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    <apex:pageBlock id="pBlock4">
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!saveRecord}" status="overlayStatus" value="Save" reRender="pBlock"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection >
+                <apex:inputField value="{!cnt.Account__c}" />
+                <apex:inputField value="{!cnt.Address_Line1__c}" />                
+                <apex:inputField value="{!cnt.Address_Line2__c}" />
+                <apex:inputField value="{!cnt.Phone__c}" />
+                <apex:inputField value="{!cnt.Fax__c}" />
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    <apex:pageBlock id="pBlock5">
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!saveRecord}" status="overlayStatus" value="Save" reRender="pBlock"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection >
+                <apex:inputField value="{!cnt.Account__c}" />
+                <apex:inputField value="{!cnt.Address_Line1__c}" />                
+                <apex:inputField value="{!cnt.Address_Line2__c}" />
+                <apex:inputField value="{!cnt.Phone__c}" />
+                <apex:inputField value="{!cnt.Fax__c}" />
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:form>
+<div id="overlay"></div>
+</apex:page>

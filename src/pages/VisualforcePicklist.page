@@ -1,0 +1,22 @@
+<apex:page standardController="User" extensions="extension_user">
+
+   <apex:sectionHeader title="Visualforce Sample" subtitle="Describe for Picklist Values" help="/help/doc/user_ed.jsp?loc=help"></apex:sectionHeader>
+   <apex:form >
+      <apex:pageBlock title="Criteria" mode="edit">
+         <apex:pageBlockSection title="Information" columns="1">
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel value="Time Zones" for="time_zones"></apex:outputLabel>
+               <apex:selectList id="time_zones" size="1" title="Time Zones">
+                  <apex:selectOptions value="{!TimeZones}"></apex:selectOptions>
+               </apex:selectList>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel value="Locales" for="locale"></apex:outputLabel>
+               <apex:selectList id="locale" size="1" title="Locale">
+                  <apex:selectOptions value="{!Locales}"></apex:selectOptions>
+               </apex:selectList>
+            </apex:pageBlockSectionItem>
+         </apex:pageBlockSection>
+      </apex:pageBlock>
+   </apex:form>
+</apex:page>

@@ -1,0 +1,42 @@
+<apex:page controller="sampleCon" sidebar="false" showHeader="false" id="testpage">
+<script>
+            var a = '';
+            function checkThis(){
+                alert('hi');
+                a1 = document.getElementById('{!$Component.theform.country}');
+                alert(a1);
+                alert(a);
+            }
+            function getJSON(){
+                a = 'US';
+                var labelArray = document.getElementsByTagName('label');
+                for(var i=0;i<labelArray.length;i++)
+                {
+                   alert('----------------'+labelArray[i].innerHTML);
+                   if(labelArray[i].innerHTML == ' ' + a || labelArray[i].innerHTML == a)
+                   {
+                     alert(' ' + a);
+                     labelArray[i].previousSibling.checked = true;
+                   }
+                }
+            }
+        </script>
+
+    <apex:form id="theform">
+        <apex:selectRadio value="{!country}" id="country" onchange="a=this.value;"> 
+            <apex:selectOptions value="{!items}" id="abccheck"/>
+            </apex:selectRadio><p/>
+            <apex:commandButton value="Test" action="{!test}" rerender="out" status="status" onclick="getJSON();"/> 
+            <apex:commandButton value="Test JS" onclick="checkThis();"/> 
+     </apex:form>
+     <apex:outputPanel id="out">
+          <apex:actionstatus id="status" startText="testing..."> 
+             <apex:facet name="stop"> 
+               <apex:outputPanel > 
+                  <p>You have selected:</p> 
+                 <apex:outputText value="{!country}"/> 
+              </apex:outputPanel> 
+            </apex:facet> 
+          </apex:actionstatus> 
+     </apex:outputPanel> 
+</apex:page>

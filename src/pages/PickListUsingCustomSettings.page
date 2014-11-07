@@ -1,0 +1,15 @@
+<apex:page controller="DependentPickListUsingCustomSettingsCtrl" sidebar="false" showheader="false" id="idPage">
+ <br/> <br/> <br/> <br/> <br/>
+ <apex:form >   
+   <apex:pageBlock >
+   <apex:pageBlockSection >
+      <apex:pageBlockSectionItem > 
+                    <apex:outputLabel >Region : </apex:outputLabel>
+                      <apex:selectList id="idRegion" size="1" value="{!region}"> 
+                         <apex:selectOptions value="{!RegionList}"/>                                                         
+                        </apex:selectList>                                      
+                </apex:pageBlockSectionItem> 
+    </apex:pageBlockSection>
+    </apex:pageBlock>
+    </apex:form>
+    </apex:page>

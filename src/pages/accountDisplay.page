@@ -1,0 +1,19 @@
+<apex:page standardController="Account" showHeader="false" sidebar="false">
+Hello {! $User.FirstName}!
+<p>You are viewing the {! account.name} account.</p>
+<p>Account Number = {! account.AccountNumber}</p>
+<p>Industry ={! account.Industry}</p>
+<apex:pageBlock >   
+<apex:pageBlockTable value="{! account.contacts}" var="item">
+<apex:column value="{! item.name}"/>
+</apex:pageBlockTable>
+</apex:pageBlock>
+<apex:pageBlock >   
+<apex:pageBlockTable value="{! account.opportunities}" var="item1">
+<apex:column value="{!item1.name}"/>
+<apex:column value="{!item1.amount}"/>
+<apex:column value="{!item1.closedate}"/>
+</apex:pageBlockTable>
+</apex:pageBlock>
+
+</apex:page>

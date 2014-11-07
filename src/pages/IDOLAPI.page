@@ -1,0 +1,10 @@
+<apex:page >
+    <html>
+        <body>
+            <form action="https://api.idolondemand.com/1/api/async/viewdocument/v1?apikey=6897827b-1d14-4341-a918-b48306d9815a&file=upload_btn&mode=document_photo" method="Post">
+                <input type='file' name='userFile'/><br/>
+                <input type='submit' name='upload_btn' value='Submit'/>
+            </form>           
+        </body>
+    </html>
+</apex:page>

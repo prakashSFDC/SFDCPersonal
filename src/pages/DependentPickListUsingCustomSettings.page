@@ -1,0 +1,31 @@
+<apex:page controller="DependentPickListUsingCustomSettingsCtrl" sidebar="false" showheader="false" id="idPage">
+ <br/> <br/> <br/> <br/> <br/>
+ <apex:form >   
+   <apex:pageBlock >
+   <apex:pageBlockSection >
+      <apex:pageBlockSectionItem > 
+                    <apex:outputLabel >Region : </apex:outputLabel>
+                      <apex:selectList id="idRegion" size="1" value="{!region}">  
+                           <apex:actionSupport event="onChange"  rerender="idPage,id1,idCountryList">  
+                               <apex:param name="regionSelected" assignTo="{!region}" value="{!$Component.idRegion}"/>             
+                          </apex:actionSupport>                            
+                         <apex:selectOptions value="{!RegionList}"/>                                                         
+                        </apex:selectList>                                      
+                </apex:pageBlockSectionItem> 
+    </apex:pageBlockSection>
+         
+          
+   <apex:pageBlockSection id="id1">
+      <apex:pageBlockSectionItem > 
+                    <apex:outputLabel >Country : </apex:outputLabel>
+                      <apex:selectList id="idCountryList" size="1" value="{!country}">                              
+                            <apex:selectOptions value="{!CountryValuesToDisplay}"/>                                                         
+                        </apex:selectList>                                      
+                </apex:pageBlockSectionItem> 
+    </apex:pageBlockSection>
+    </apex:pageBlock>
+    
+   
+    </apex:form>
+    
+</apex:page>

@@ -1,0 +1,24 @@
+<apex:page controller="RerenderController">
+  
+
+   
+  <h1>Select a Category</h1>
+  <apex:form id="theForm">
+      <apex:actionFunction name="onCategoryChange" action="{!onCategoryChange}" reRender="theForm" />
+
+      <apex:selectList value="{!category}" size="1" onchange="onCategoryChange()">
+          <apex:selectoptions value="{!categories}"/>
+
+      </apex:selectList>
+      &nbsp;      &nbsp;      &nbsp;
+      <apex:selectList value="{!categoryValue}" size="1">
+          <apex:selectoptions value="{!categoryValues}"/>
+      </apex:selectList>
+            
+      &nbsp;      &nbsp;      &nbsp;      
+      <apex:outputText value="{!categoryValuesAsCSV}" />
+
+
+  </apex:form>
+  
+</apex:page>

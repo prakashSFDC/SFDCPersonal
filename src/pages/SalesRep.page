@@ -1,0 +1,18 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false"
+standardController="Shipment__c" recordSetVar="shipments">
+<apex:stylesheet value="{!URLFOR($Resource.styles, 'styles.css')}"/>
+<h1>Shipments in progress </h1>
+
+<apex:dataTable value="{!shipments}" var="pitem" rowClasses="even,odd">
+<apex:column headerValue="Shipment">
+<apex:outputText value="{!pitem.name}"></apex:outputText>
+</apex:column>
+
+<apex:column headerValue="Oppotunity">
+<apex:outputText value="{!pitem.Opportunity__r.name}"></apex:outputText>
+</apex:column>
+<apex:column headerValue="Status">
+<apex:outputText value="{!pitem.Opportunity__r.SubmitionStatus__c}"></apex:outputText>
+</apex:column>
+</apex:dataTable>
+</apex:page>

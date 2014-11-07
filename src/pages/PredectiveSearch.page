@@ -1,0 +1,25 @@
+<apex:page controller="PredSearch" sidebar="false" showHeader="false" standardStylesheets="false">
+
+<style>
+  .search{font-size:14pt}
+</style>
+<apex:form > 
+ <apex:actionFunction name="fetchResults" action="{!doSearch}" reRender="searchResults"/>
+<apex:stylesheet value="{!URLFOR($Resource.styles, 'styles.css')}"/>
+
+   <h1>Congratulations</h1>  
+    <apex:pageBlock >          
+         <apex:outputPanel styleClass="search">
+                Search for Accounts:&nbsp;&nbsp;&nbsp;
+            </apex:outputPanel>
+            <apex:inputText value="{!accountname}" onkeyup="fetchResults();" style="width:300px"/>
+   
+    <apex:outputPanel id="searchResults">
+         <apex:pageBlockTable value="{!AvailableAccounts}" var="p">
+             <apex:column headerValue="Account Name"><apex:outputText value="{!p.name}"></apex:outputText></apex:column>
+             <apex:column headerValue="Phone no"> <apex:outputText value="{!p.phone}"></apex:outputText></apex:column>
+         </apex:pageBlockTable> 
+     </apex:outputPanel>
+     </apex:pageBlock> 
+  </apex:form>
+  </apex:page>

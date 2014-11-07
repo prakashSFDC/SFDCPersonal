@@ -1,0 +1,26 @@
+<apex:page controller="testTime">
+    <script>
+        function curTime(){
+            // do validation
+            startTimer();
+        }
+        function checkTime(){
+            checkTimer();
+        }
+        function testTimer(){
+            testTimefn();
+        }
+        function stopMonitor(){
+            stopMonitor123();
+        }
+        
+    </script>
+    <apex:form >
+        <apex:actionFunction action="{!startTimer}" name="startTimer" rerender="hello" oncomplete="checkTime();"/>
+        <apex:actionFunction action="{!checkTimer}" name="checkTimer" rerender="hello" oncomplete="testTimer();"/>
+        <apex:actionFunction action="{!testTimefn}" name="testTimefn" rerender="hello" oncomplete="stopMonitor();"/>
+        <apex:actionFunction action="{!stopMonitor}" name="stopMonitor123" rerender="hello" />
+        <input type="button" value="submit" onclick="curTime();return false;" />
+        <apex:pageBlock id="hello"></apex:pageBlock>
+</apex:form>
+</apex:page>

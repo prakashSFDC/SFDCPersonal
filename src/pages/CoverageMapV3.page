@@ -1,0 +1,714 @@
+<apex:page id="pageForm"  standardController="Opportunity"    extensions="CoverageControllerV4" showHeader="true" sidebar="true" >
+        <apex:form id="form" >
+    
+        <apex:pageBlock id="mapBlock" title="Map">
+            <apex:outputPanel layout="block" id="mapCanvas"
+                style="height: 600px; border: 1px solid black;" />
+        </apex:pageBlock>
+
+                  
+                 <apex:outputText id="helpText" style="font-style:italic" value="The  results in the graph may be overlapped, if under the same geographical location" />  <br></br>      
+         
+         <br></br> 
+      
+        
+        <apex:outputpanel id="legend">
+        <apex:pageblock id="legendBlock" title="Legend Block" rendered="{!legendName!=''}">  
+            <apex:pageBlockSection columns="1" title="Legend" id="legsec"> 
+                <apex:outputPanel style="margin-left:auto;margin-right:auto;">
+                    <apex:image id="theImage"
+                        value="{!URLFOR($Resource.coveragemap, legendName)}" />
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageblock>
+        </apex:outputpanel>   
+    
+         
+        <apex:pageBlock id="options" title="Options">
+       
+            <apex:pageBlockSection id="global" title="Global Options">
+                <apex:pageBlockSectionItem id="territoryBlock">
+                    <apex:outputLabel value="Territory" for="territory" />
+                    <apex:selectList value="{!territory}" id="territory" size="1" 
+                        onchange="optionsRefresh()">
+                        <apex:selectOptions value="{!territories}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="mapOptionsBlock">
+                    <apex:outputLabel value="Map Options" for="mapOptions" /> 
+                    <apex:selectList value="{!mapOption}" id="mapOptions" size="1">
+                        <apex:selectOptions value="{!mapOptions}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="accountTypeBlock">
+                    <apex:outputLabel value="Type" for="accountType" />
+                    <apex:selectList value="{!accountType}" id="accountType" size="1">
+                        <apex:selectOptions value="{!accountTypes}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="analisysBlock">
+                    <apex:outputLabel value="Analysis" for="analisys" />
+                    <apex:selectList id="analisys" size="1" value="{!slcAnalysis}"
+                        onchange="refreshOptions()">
+                        <apex:selectOptions value="{!analisys}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="testBlock">
+                    <apex:outputLabel value="TestBlock" for="testblock" />
+                    <apex:selectList id="testblock" size="1" value="{!testAnalysis}"
+                        onchange="refreshOptions()">
+                        <apex:selectOptions value="{!tesanalisys}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" title="Account Options"
+                rendered="{!slcAnalysis=='Account'}">               
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Track" for="accTrack" />
+                    <apex:panelGroup >         
+                       <apex:inputCheckbox id="Mobility_checkbox" value="{!MobilityCheckbox}" styleclass="makeRows"/>
+                       <label>Mobility</label> &nbsp;&nbsp;&nbsp;&nbsp; 
+                       <apex:inputCheckbox id="Radio_checkbox" value="{!RadioCheckbox}" styleclass="makeRows"/>
+                       <label>Radio</label>  &nbsp;&nbsp;&nbsp;&nbsp;                   
+                        <apex:inputCheckbox id="WNS_checkbox" value="{!WNSCheckbox}" styleclass="makeRows"/>
+                       <label>WNS</label>  
+                   </apex:panelGroup>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Industry" for="accIndustry" />
+                    <apex:panelGroup >
+                    <apex:commandLink onclick="setAllCheckBoxes('{!$Component.accIndustry}', true)"
+                            rerender="process">Check All</apex:commandLink>
+                             &nbsp;
+                             <apex:commandLink onclick="setAllCheckBoxes('{!$Component.accIndustry}', false)"
+                            rerender="process">Uncheck All</apex:commandLink> 
+                        <apex:selectCheckboxes value="{!accIndustry}" id="accIndustry" styleclass="makeRows">
+                            <apex:selectOptions value="{!accIndustries}" />
+                        </apex:selectCheckboxes>
+                    </apex:panelGroup>                    
+                </apex:pageBlockSectionItem> 
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" title="Opportunities Options" 
+                rendered="{!slcAnalysis=='Opportunity'}">
+                <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Primary Product Track" for="primaryProductTrack" />
+                            <apex:selectCheckboxes value="{!primaryProductTrack}" id="primaryProductTrack" > 
+                                 <apex:actionSupport event="onchange"  reRender="options,fixlayout,MobilityProductTrackDetail,RadioProductTrackDetail,SystemProductTrackDetail,WNSProductTrackDetail" action="{!productFlag}"/>                         
+                                <apex:selectOptions value="{!PrimaryProductTracks}" />
+                            </apex:selectCheckboxes>
+                        </apex:pageBlockSectionItem>
+           
+                    <apex:pageBlockSectionItem rendered="{!(IF(not(mFlag!='Mobility'),true,false))}">
+                    
+                        <apex:outputLabel value="Mobility Product Track Details " for="mobilityProductTrackDetails" />
+                            <apex:panelGroup id="MobilProductTrackDetail">
+                            <apex:selectCheckboxes value="{!mobilityProductTrackDetail}" id="mobilityProductTrackDetail"  styleClass="makeRows">
+                                <apex:selectOptions value="{!MobilityProductTrackDetails}" />
+                            </apex:selectCheckboxes> 
+                            </apex:panelGroup>                    
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem rendered="{!(IF(not(rFlag!='Radio'), true, false))}">
+                    
+                        <apex:outputLabel value="Radio Product Track Details " for="radioproductTrackDetails" />
+                            <apex:panelGroup id="RadProductTrackDetail">
+                            <apex:selectCheckboxes value="{!radioProductTrackDetail}" id="radioProductTrackDetail"  styleClass="makeRows">
+                                <apex:selectOptions value="{!RadioProductTrackDetails}" />
+                            </apex:selectCheckboxes>
+                        </apex:panelGroup>
+                    </apex:pageBlockSectionItem>
+                    
+                     <apex:pageBlockSectionItem rendered="{!(IF(not(sFlag!='System'), true, false))}">
+                    
+                        <apex:outputLabel value="System Product Track Details " for="systemproductTrackDetails" />
+                            <apex:panelGroup id="SysProductTrackDetail">
+                            <apex:selectCheckboxes value="{!systemProductTrackDetail}" id="systemProductTrackDetail"  styleClass="makeRows">
+                                <apex:selectOptions value="{!SystemProductTrackDetails}" />
+                            </apex:selectCheckboxes>
+                        </apex:panelGroup>
+                    </apex:pageBlockSectionItem>
+                    
+                      <apex:pageBlockSectionItem rendered="{!(IF(not(wFlag!='WNS'), true, false))}">
+                    
+                        <apex:outputLabel value="WNS Product Track Details " for="wnsproductTrackDetails" />
+                            <apex:panelGroup id="WProductTrackDetail">
+                            <apex:selectCheckboxes value="{!wnsProductTrackDetail}" id="wnsProductTrackDetail"  styleClass="makeRows">
+                                <apex:selectOptions value="{!WNSProductTrackDetails}" />
+                            </apex:selectCheckboxes>
+                        </apex:panelGroup>
+                    </apex:pageBlockSectionItem>
+                    
+                    
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Stage" for="oppStage" />
+                     <apex:panelGroup >
+                    <apex:commandLink onclick="setAllCheckBoxes('{!$Component.oppStage}', true)"
+                            rerender="process">Check All</apex:commandLink>
+                             &nbsp;
+                             <apex:commandLink onclick="setAllCheckBoxes('{!$Component.oppStage}', false)"
+                            rerender="process">Uncheck All</apex:commandLink> 
+                        <apex:selectCheckboxes value="{!oppStage}" id="oppStage"  styleClass="makeRows">
+                            <apex:selectOptions value="{!oppStages}" />
+                        </apex:selectCheckboxes>
+                    </apex:panelGroup>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="From" for="fromDate" />
+                    <apex:inputField value="{!opportunity.From_Date__c}"  onchange="refreshOptions()"/>   
+                    </apex:pageBlockSectionItem>
+                                   
+                    <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="To" for="toDate" />
+                    <apex:inputField value="{!opportunity.To_Date__c}" onchange="refreshOptions()" />
+                </apex:pageBlockSectionItem>
+                        
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Vertical Market" for="oppIndustry" />
+                     <apex:panelGroup >
+                                          
+                     <apex:commandLink onclick="setAllCheckBoxes('{!$Component.oppIndustry}', true)"
+                            rerender="process">Check All</apex:commandLink>
+                             &nbsp;
+                             <apex:commandLink onclick="setAllCheckBoxes('{!$Component.oppIndustry}', false)"
+                            rerender="process">Uncheck All</apex:commandLink>
+                            
+                    <apex:selectCheckboxes value="{!oppIndustry}" id="oppIndustry"  styleClass="makeRows">
+                        <apex:selectOptions value="{!oppIndustries}" />
+                    </apex:selectCheckboxes>
+                    </apex:panelGroup>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="End User Account" for="endUserLookup"/>
+                        <apex:inputField id="endUserLookup" value="{!Opportunity.End_User_Account__c}" onchange="refreshOptions()"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Partner" for="partnerLookup"/>
+                        <apex:inputField id="partnerLookup" value="{!Opportunity.Partner_Account__c}" onchange="refreshOptions()"/>
+                    </apex:pageBlockSectionItem>
+                   <apex:pageBlockSectionItem >
+                         <apex:outputLabel value="Distributor" for="distributorLookup"/>
+                        <apex:inputField id="distributorLookup" value="{!Opportunity.Distributor_Type_Account__c}" onchange="refreshOptions()"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Deal Location Country" for="dealLocationState" />
+                        <apex:inputfield value="{!Opportunity.Deal_Location_Country__c}" />
+                     </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Deal Location State" for="dealLocationState" />
+                        <apex:inputfield value="{!Opportunity.Deal_Location_State__c}" />
+                    </apex:pageBlockSectionItem>
+                              
+            
+                </apex:pageBlockSection>
+            
+                <apex:pageBlockSection columns="12" rendered="{!slcAnalysis=='Opportunity'}">                
+                
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>                  
+                
+                <apex:pageBlockSectionItem >
+                 <apex:outputPanel >                   
+                    <table><tr><td align="left">Amount:</td>
+                    <td align="left"><apex:selectList value="{!oppAmountCondition}" size="1"  >
+                            <apex:selectOption itemValue="=" itemLabel="=" />
+                            <apex:selectOption itemValue=">=" itemLabel=">=" />
+                            <apex:selectOption itemValue="<=" itemLabel="<=" />
+                       </apex:selectList> </td></tr></table>
+                        </apex:outputPanel>
+                    <apex:inputfield value="{!Opportunity.Amount}" onchange="refreshOptions()"/>                    
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>  
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>  
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>  
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>             
+               
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+                
+                <apex:commandButton value="Apply" onclick="resetResults()" 
+                    oncomplete="drawMarkers();return false;" action="{!apply}"
+                    rerender="jsvalues,information,legend,text" status="process" />
+                <apex:commandButton value="Print" onclick="window.print()"
+                    rerender="process" />
+                <apex:actionStatus id="process" startText="(processing..)" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        <apex:pageBlock id="information" title="Information">
+            <apex:pageBlockSection title="Summary">
+                <apex:pageBlockSectionItem id="summaryBlock">
+                    <apex:outputLabel value="Markers" for="markers" />
+                    <apex:outputLabel value="{!markers}" for="markers" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="amountBlock"
+                    rendered="{!slcAnalysis=='Opportunity'}">
+                    <apex:outputLabel value="Amount" for="amount" />
+                    <apex:outputText id="amount"
+                        value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!amount}" />
+                    </apex:outputText>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!dataSource!=''}">
+                    <apex:outputLabel value="Data Source" for="dataSource" />
+                    <apex:outputText id="dataSource" value="{!dataSource}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="1" title="Graphics"
+                rendered="{!graphicName!=''}">
+                <apex:outputPanel layout="block">
+                    <apex:image id="theImage"
+                        value="{!URLFOR($Resource.coveragemap, graphicName)}" />
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            
+           <apex:pageBlockSection id="AcctableData" columns="1" title="Results"
+                rendered="{!AccShowResults}">
+                <apex:pageBlockTable value="{!WrapperAccountPLChanges}" var="acc"
+                    first="{!currentIndex}" rows="25"
+                    rendered="{!slcAnalysis=='Account'}">
+                    <apex:facet name="header">
+                        <apex:panelGroup >
+                            <apex:commandButton value="Previous" action="{!previous}"
+                                rerender="AcctableData" rendered="{!(IF(not(currentIndex<25), true, false))}" />
+                            <apex:commandButton value="Next" action="{!next}"
+                                rerender="AcctableData" rendered="{!(IF(not(markers<25 || currentIndex>(markers-25 )), true, false))}" />
+                            <apex:commandButton value="Export to Excel"
+                                action="{!exportExcel}" rendered="{!(IF(not(markers=0), true, false))}" />
+                        </apex:panelGroup>
+                    </apex:facet>
+                    <apex:column >
+                        <apex:facet name="header">Name</apex:facet>
+                        <apex:outputText value="{!acc.FieldsName}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Type</apex:facet>
+                        <apex:outputText value="{!acc.FieldAccountType}" />
+                    </apex:column> 
+                    
+                     <apex:facet name="footer">
+                        <apex:panelGroup >
+                            <apex:commandButton value="Previous" action="{!previous}"
+                                rerender="AcctableData" rendered="{!(IF(not(currentIndex<25), true, false))}" />
+                            <apex:commandButton value="Next" action="{!next}"
+                                rerender="AcctableData" rendered="{!(IF(not(markers<25 || currentIndex>(markers-25 )), true, false))}" />
+                            <apex:commandButton value="Export to Excel"
+                                action="{!exportExcel}" rendered="{!(IF(not(markers=0), true, false))}" />
+                        </apex:panelGroup>
+                    </apex:facet>
+                </apex:pageBlockTable>              
+            </apex:pageBlockSection>            
+                
+                <apex:pageBlockSection id="tableData" columns="1" title="Results" rendered="{!OppShowResults}">
+
+                <apex:pageBlockTable value="{!WrapperOpporPLChanges}" var="opp"
+                    first="{!currentIndex}" rows="25"
+                    rendered="{!slcAnalysis=='Opportunity'}">
+                     <apex:facet name="header">
+                        <apex:panelGroup >
+                            <apex:commandButton value="Previous" action="{!previous}"
+                                rerender="tableData" rendered="{!(IF(not(currentIndex<25), true, false))}" />
+                            <apex:commandButton value="Next" action="{!next}"
+                                rerender="tableData" rendered="{!(IF(not(markers<25 || currentIndex>(markers-25 )), true, false))}" />
+                            <apex:commandButton value="Export to Excel"
+                                action="{!exportExcel}" rendered="{!(IF(not(markers=0), true, false))}"/>
+                        </apex:panelGroup>
+                    </apex:facet>
+                    <apex:column >
+                        <apex:facet name="header">Name</apex:facet>
+                        <apex:outputText value="{!opp.FieldsName}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Account Name</apex:facet>
+                        <apex:outputText value="{!opp.FieldAccountName}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Account Type</apex:facet>
+                        <apex:outputText value="{!opp.FieldAccountType}" />
+                    </apex:column>
+                   
+                    <apex:column >
+                        <apex:facet name="header">Industry</apex:facet>
+                        <apex:outputText value="{!opp.FieldIndustry}" />
+                    </apex:column>
+                    
+                    <apex:column >
+                        <apex:facet name="header">Amount</apex:facet>
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!opp.FieldAmount}" />
+                        </apex:outputText>
+                    </apex:column>
+                   <apex:facet name="footer">
+                        <apex:panelGroup >
+                            <apex:commandButton value="Previous" action="{!previous}"
+                                rerender="tableData" rendered="{!(IF(not(currentIndex<25), true, false))}" />
+                            <apex:commandButton value="Next" action="{!next}"
+                                rerender="tableData" rendered="{!(IF(not(markers<25 || currentIndex>(markers-25 )), true, false))}" />
+                            <apex:commandButton value="Export to Excel"
+                                action="{!exportExcel}" rendered="{!(IF(not(markers=0), true, false))}" />
+                        </apex:panelGroup>
+                    </apex:facet>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>            
+        </apex:pageBlock>                     
+            
+      
+       
+        <apex:actionFunction name="refreshOptions"
+            reRender="options,information,legend,fixlayout" />
+      <apex:actionFunction name=" optionsRefresh"
+            reRender="options,fixlayout" />
+    </apex:form>
+    
+    <script type="text/javascript"  src="http://maps.googleapis.com/maps/api/js?sensor=false"> </script>
+    <script  type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script> 
+    <script type="text/javascript" src="{!$Resource.USGSOverlay}"/> 
+    <script type="text/javascript" src="{!$Resource.Util}"/> 
+
+    <apex:outputPanel id="fixlayout">
+        <script type="text/javascript">
+        
+            function layoutCheckboxes() {
+               var tables = document.getElementsByTagName("table");
+               for (var i=0 ; i < tables.length ; i++) {
+                  if (tables[i].className == "makeRows")
+                     makeRows(tables[i], 6);
+               } 
+            }
+    
+            function makeRows(table, columnCount) {
+               var cells = table.rows[0].cells;
+               var cellCount = cells.length;
+               var rowCount = Math.ceil(cellCount/columnCount);
+              
+               for (var i=0; i < rowCount; i++)
+                  table.insertRow(0);
+                  
+               for (var i=0; i < cellCount; i++) {
+                  var row = Math.floor(i/columnCount);
+                  table.rows[row].appendChild(cells[i].cloneNode(true));
+               }
+               
+               table.deleteRow(rowCount);
+            }
+            
+            layoutCheckboxes();
+            
+        </script>
+    </apex:outputPanel>
+    <script type="text/javascript">
+    
+        window.onload = loadMap;
+        
+         function loadMap() {
+            
+           /* accs = [];
+            opps = [];
+            sforce.connection.sessionId = '{!$Api.Session_ID}';
+            if (GBrowserIsCompatible()) {
+                map = new GMap2(document.getElementById("{!$Component.pageForm.form.mapBlock.mapCanvas}"));
+                map.setCenter(new GLatLng(-9.449062,-84.199219), 3);
+                map.setUIToDefault();
+            } */
+            
+            map = null;
+            accs = [];
+            opps = [];
+            var latlng = new google.maps.LatLng(-9.449062,-84.199219);           
+             var myOptions = {
+             zoom: 3,
+             center: latlng,
+             mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            if (true) {                        
+            var map=new google.maps.Map(document.getElementById("{!$Component.pageForm.form.mapBlock.mapCanvas}"),myOptions );                
+            }
+        };
+    </script>
+    <apex:outputPanel id="jsvalues">
+
+      <apex:repeat value="{!WrapperAccountPLChanges}" var="accPLNew"
+            rendered="{!slcAnalysis=='Account'}">
+            <script type="text/javascript">
+
+                accs.push(["{!accPLNew.FieldsName}","{!TEXT(accPLNew.FieldLatitude)}","{!TEXT(accPLNew.FieldLongitude)}","{!accPLNew.FieldId}"]);
+
+            </script>
+                       
+        </apex:repeat>
+
+    <apex:repeat value="{!WrapperOpporPLChanges}" var="oppPLNew"
+            rendered="{!slcAnalysis=='Opportunity'}">
+            <script type="text/javascript">
+                opps.push(["{!oppPLNew.FieldsName}","{!oppPLNew.FieldLatitude}","{!oppPLNew.FieldLongitude}","{!oppPLNew.FieldId}","{!oppPLNew.FieldAmount}","{!oppPLNew.FieldIndustry}","{!oppPLNew.FieldAccountName}"]);
+            </script>
+        </apex:repeat>
+        <script type="text/javascript">
+        
+            function resetResults() {
+                accs = [];
+                opps = [];
+            }
+            
+            function drawMarkers() {
+            
+                var mapOption = "{!mapOption}";
+                var territory = "{!territory}";
+                
+                
+                
+            
+                //map.clearOverlays();
+                
+                /*if (territory=='Territory 1 - Mexico')
+                    map.setCenter(new GLatLng(21.616579,-100.195312), 5); */
+                    
+                if (territory=='Territory 1 - Mexico'){                   
+                    var latlng = new google.maps.LatLng(21.616579,-100.195312);
+                    var myOptions = {               
+                    zoom: 5,
+                    center: latlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };            
+                    map = new google.maps.Map(document.getElementById("{!$Component.pageForm.form.mapBlock.mapCanvas}"),myOptions);         
+                  } 
+                    
+               /* if (territory=='Territory 2 - Caricam')
+                    map.setCenter(new GLatLng(15.284185, -79.233398), 5); */
+                    
+                 if (territory=='Territory 2 - Caricam'){                   
+                    var latlng = new google.maps.LatLng(15.284185, -79.233398);
+                    var myOptions = {               
+                    zoom: 5,
+                    center: latlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };            
+                    map = new google.maps.Map(document.getElementById("{!$Component.pageForm.form.mapBlock.mapCanvas}"),myOptions);         
+                  }     
+                
+               /* if (territory=='Territory 3 - Andean')
+                    map.setCenter(new GLatLng(2.899153, -72.553711), 5); */
+                    
+                if (territory=='Territory 3 - Andean'){                   
+                    var latlng = new google.maps.LatLng(2.899153, -72.553711);
+                    var myOptions = {               
+                    zoom: 5,
+                    center: latlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };            
+                    map = new google.maps.Map(document.getElementById("{!$Component.pageForm.form.mapBlock.mapCanvas}"),myOptions);         
+                  }    
+                    
+               /* if (territory=='Territory 4 - Southern Cone')
+                    map.setCenter(new GLatLng(-39.774769,-67.5), 4); */
+                    
+                if (territory=='Territory 4 - Southern Cone'){                   
+                    var latlng = new google.maps.LatLng(-39.774769,-67.5);
+                    var myOptions = {               
+                    zoom: 4,
+                    center: latlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };            
+                    map = new google.maps.Map(document.getElementById("{!$Component.pageForm.form.mapBlock.mapCanvas}"),myOptions);         
+                  } 
+                
+               /* if (territory=='Territory 5 - Brazil')
+                    map.setCenter(new GLatLng(-12.7260, -66.0937), 4); */
+                    
+                if (territory=='Territory 5 - Brazil'){                   
+                    var latlng = new google.maps.LatLng(-12.7260, -66.0937);
+                    var myOptions = {               
+                    zoom: 4,
+                    center: latlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };            
+                    map = new google.maps.Map(document.getElementById("{!$Component.pageForm.form.mapBlock.mapCanvas}"),myOptions);         
+                  } 
+                    
+                    
+                var pointSW = null;
+                var pointNE = null;
+                
+                if (mapOption && territory=='Territory 5 - Brazil') {         
+                   
+                    /* var pointSW = new GLatLng(-33.80,-73.98);
+                       var pointNE = new GLatLng(5.25,-34.75); */
+                       
+                       var pointSW = new google.maps.LatLng(-33.80,-73.98);
+                       var pointNE = new google.maps.LatLng(5.25,-34.75); 
+                       var bounds = new google.maps.LatLngBounds(pointSW, pointNE); 
+                }
+                
+                if (mapOption && territory=='Territory 1 - Mexico') {  
+                
+                   /* var pointSW = new GLatLng( 14.38, -117.00);
+                      var pointNE = new GLatLng(32.71, -86.58); */
+                      
+                        var pointSW = new google.maps.LatLng(14.38, -117.00);
+                        var pointNE = new google.maps.LatLng(32.71, -86.58); 
+                        var bounds = new google.maps.LatLngBounds(pointSW, pointNE); 
+                }
+                
+                
+                if (mapOption && territory=='Territory 3 - Andean') {  
+                
+                     /* var pointSW = new GLatLng(-2.00, -122.75);
+                        var pointNE = new GLatLng(10.40,-22.80); */
+                        
+                        var pointSW = new google.maps.LatLng(-2.00, -122.75);
+                        var pointNE = new google.maps.LatLng(10.40,-22.80); 
+                        var bounds = new google.maps.LatLngBounds(pointSW, pointNE); 
+                }
+                
+            
+                if (mapOption && (territory=='Territory 4 - Southern Cone' || territory=='Territory 2 - Caricam')) {
+                    
+                    /*  var pointSW = new GLatLng(-56.00, -117.00);
+                        var pointNE = new GLatLng(33.25,-34.68);  */
+                        
+                        var pointSW = new google.maps.LatLng(-56.00, -117.00);
+                        var pointNE = new google.maps.LatLng(33.25,-34.68); 
+                        var bounds = new google.maps.LatLngBounds(pointSW, pointNE); 
+                }
+                
+                alert('Map Option Value:'+ mapOption); 
+                if (mapOption!='Google Maps - No Overlay') {
+                
+                    var isIE = /*@cc_on!@*/false;
+                    if(isIE)
+                        map.addOverlay(new USGSOverlay("{!URLFOR($Resource.CoverageMap, mapName+'.png')}", bounds,map));
+                    else
+                    {
+                        alert('In else part ');  
+                        map.addOverlay(new USGSOverlay("{!URLFOR($Resource.CoverageMap, mapName+'.svg')}", bounds,map));
+                    }
+                }
+                
+                if ("Account"=="{!slcAnalysis}")
+                   drawAccounts();
+                else
+                   drawOpportunities();
+            }
+            
+            function drawAccounts() {            
+                if (accs.length>0) {
+                    //var geocoder = new GClientGeocoder();
+                    var index=0;
+                    var nextAddress = function() {
+                        var name = accs[index][0];                        
+                        var latitude = accs[index][1];                        
+                        var longitude = accs[index][2];
+                        var id = accs[index][3];                       
+                        
+                        var placeMarker = function(latitude, longitude) {
+                           /* var markerIcon = new GIcon();
+                            markerIcon.iconSize = new GSize(16, 16);
+                            markerIcon.iconAnchor = new GPoint(5, 16);
+                            markerIcon.infoWindowAnchor = new GPoint(10, 1);                         
+                            markerIcon.image = "{!URLFOR($Resource.CoverageMap, 'blue-pushpin.png')}";  
+                            var markerOptions = { icon: markerIcon };                                
+                            map.addOverlay(createMarker(new GLatLng(latitude,longitude), name, markerOptions)); */
+                            
+                            //alert('Before Create Marker');
+                            var Finalmarker=new createMarker(new google.maps.LatLng(latitude,longitude),name);                         
+                            //alert('After Create Marker');
+                            Finalmarker.setMap(map);
+                        };
+                        
+                        if (latitude==null || latitude=='') {
+                             if (++index < accs.length)
+                                nextAddress();
+                                                          
+                        } else {
+                            placeMarker(latitude, longitude);
+                            if (++index < accs.length)
+                                nextAddress();
+                        }
+                    };
+                    nextAddress();
+                }
+            }
+            
+            function drawOpportunities() {
+                if (opps.length>0) {
+                    //var geocoder = new GClientGeocoder();
+                    var index=0;
+                    var nextAddress = function() {
+                        var name = opps[index][0];                        
+                        var latitude = opps[index][1];
+                        var longitude = opps[index][2];
+                        var id = opps[index][3];
+                        var amount = opps[index][4];
+                        var industry = opps[index][5]; 
+                        
+                        
+                        var placeMarker = function(latitude, longitude) {
+                      /*    var markerIcon = new GIcon();
+                            markerIcon.iconSize = new GSize(16, 16);
+                            markerIcon.iconAnchor = new GPoint(5, 16);
+                            markerIcon.infoWindowAnchor = new GPoint(10, 1);
+                            markerIcon.image = "{!URLFOR($Resource.CoverageMap, 'blue-pushpin.png')}";
+                            var markerOptions = { icon: markerIcon };
+                            var label = name+"<br>"+amount+"&nbsp;-&nbsp;"+industry;
+                            map.addOverlay(createMarker(new GLatLng(latitude,longitude), label, markerOptions)); */
+                            
+                            var label = name+"<br>"+amount+"&nbsp;-&nbsp;"+track+"<br>"+industry;
+                            var Finalmarker=new createMarker(new google.maps.LatLng(latitude,longitude),label);
+                            Finalmarker.setMap(map); 
+                        };
+                        
+                            if (latitude==null || latitude=='') {
+                                if (++index < opps.length)
+                                nextAddress();
+                                                           
+                            } else {
+                            placeMarker(latitude, longitude);
+                            if (++index < opps.length)
+                                nextAddress();
+                        }
+                    };
+                    nextAddress();
+                }
+            }
+
+            function createMarker(point, message, markerOptions) {
+           /*   var marker = new GMarker(point, markerOptions);
+                GEvent.addListener(marker, "click", function() {
+                    var myHtml = "<b>" + message + "</b>";
+                    map.openInfoWindowHtml(point, myHtml);
+                }); */
+                
+                var pinIcon= "https://cs3.salesforce.com/resource/1320908663000/BluePushPin";
+                var pinIcon1 = new google.maps.MarkerImage(pinIcon,new google.maps.Size(20,32), new google.maps.Point(0, 0),new google.maps.Point(0, 32));  
+                var marker=new google.maps.Marker({position: point,
+                    map: map,
+                    icon: pinIcon1
+                });             
+                var infoWindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(marker, "click", function() {
+                    infoWindow.setPosition(point);
+                    infoWindow.setContent(message);
+                    infoWindow.open(map,marker)
+                });
+                return marker;
+            }
+            
+            function setAllCheckBoxes(componentId, value) {
+                var table = document.getElementById(componentId);
+                var checkBoxes = table.getElementsByTagName("input");
+                for(var i = 0; i < checkBoxes.length; i++)
+                    checkBoxes[i].checked = value;
+            }
+            
+        </script>
+    </apex:outputPanel>
+    
+</apex:page>

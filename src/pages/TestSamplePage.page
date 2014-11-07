@@ -1,0 +1,7 @@
+<apex:page showHeader="true">
+  <!-- Begin Default Content REMOVE THIS -->
+  <h1>Congratulations</h1><br/>
+  This is your new Page<br/>
+  This us sample test page which will give an idea on VF 
+  <!-- End Default Content REMOVE THIS -->
+</apex:page>

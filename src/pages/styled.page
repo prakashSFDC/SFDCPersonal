@@ -1,0 +1,6 @@
+<apex:page standardController="Account"  >
+<apex:stylesheet value="http://developer.force.com/workbooks/vfdemo.css"/>
+<h1>My Styled Page</h1>
+<p>
+Great!</p>
+</apex:page>

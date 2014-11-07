@@ -1,0 +1,19 @@
+<apex:page controller="TestExample">
+  <!-- Begin Default Content REMOVE THIS -->
+  <h1>Congratulations</h1>
+  This is your new Page
+  <!-- End Default Content REMOVE THIS -->
+  <apex:pageBlock >
+  <apex:pageBlockTable value="{!listAccounts}" var="acc">
+      <apex:column >
+      <apex:facet name="header">Id</apex:facet>
+        <apex:outputField value="{!acc.Id}"/>
+      </apex:column>
+      <apex:column >
+      <apex:facet name="header">Name</apex:facet>
+        <apex:outputField value="{!acc.Name}"/>
+      </apex:column>      
+  </apex:pageBlockTable>
+  </apex:pageBlock>
+  
+</apex:page>

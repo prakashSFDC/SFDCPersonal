@@ -1,0 +1,11 @@
+<apex:page standardController="Account" extensions="TestMultiselect">
+<apex:form >
+<apex:inputfield value="{!Account.Stage__c}" />
+<apex:inputfield value="{!Account.Territory__c}" />
+
+<apex:commandButton Value="Apply" action="{!testsubmit}"/>
+
+</apex:form>
+
+{!Greeting}
+</apex:page>

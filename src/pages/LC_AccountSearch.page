@@ -1,0 +1,15 @@
+<!--
+Page Name  : LC_AccountSearch
+User Story : 126
+Description: This page is used to query the account names for the SI Registration functionality
+             and the result return by this funciton is used by jQuery autocomplete plugin.
+
+Date                    Author                        Version
+10/14/2010            SORNANATHAN
+
+-->
+
+<apex:page controller="LC_AccountSearchController" contentType="text/plain" showHeader="false" standardStylesheets="false">
+    {!resp}
+    
+</apex:page>

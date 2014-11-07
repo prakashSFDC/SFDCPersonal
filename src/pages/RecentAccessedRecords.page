@@ -1,0 +1,41 @@
+<apex:page controller="RecentAccessedRecords" standardStylesheets="false">
+  <!-- Begin Default Content REMOVE THIS -->
+  <apex:form >
+  <h1>These are lastestly accessed records</h1>  
+   <br/><br/>
+   <h1>By Using APEX DATALIST</h1> 
+   <apex:dataList value="{!listRecentRecords}" var="rec">
+        <apex:outputLink value="/{!rec.Id}">{!rec.Name}</apex:outputLink> &nbsp; &nbsp;
+        <apex:outputText value="{!rec.Type}"/>
+    </apex:dataList>
+     <br/><br/>
+   <h1>By Using APEX DATATABLE</h1>  
+    <apex:dataTable value="{!listRecentRecords}" var="rec">
+        <apex:column >
+            <apex:facet name="header">Name</apex:facet>           
+            <apex:outputLink value="/{!rec.Id}">{!rec.Name}</apex:outputLink>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Type</apex:facet>           
+            <apex:outputText value="{!rec.Type}"/>
+        </apex:column>
+    </apex:dataTable>
+    <br/><br/> 
+    <h1>By Using APEX PAGE BLOCK TABLE</h1>
+    <apex:pageBlock title="Recent Records">
+        <apex:pageBlockTable value="{!listRecentRecords}" var="rec">
+            <apex:column headerValue="Name">
+                 <apex:outputLink value="/{!rec.Id}">{!rec.Name}</apex:outputLink>
+                 </apex:column> 
+            <apex:column value="{!rec.Type}"/> 
+        </apex:pageBlockTable> 
+    </apex:pageBlock> 
+    <br/><br/> 
+    <h1>By Using APEX REPEAT</h1> <br/>
+    <apex:repeat value="{!listRecentRecords}" var="rec">
+        <apex:outputLink value="/{!rec.Id}">{!rec.Name}</apex:outputLink> 
+        <apex:outputText value="{!rec.Type}"/><br/>
+    </apex:repeat>
+    
+    </apex:form>
+</apex:page>

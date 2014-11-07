@@ -1,0 +1,83 @@
+<apex:page id="autoSearch" controller="AutoComplete_Adobe">
+<apex:form id="Registration">
+
+<apex:Stylesheet value="{!$Resource.jqueryautocompletecssAdobe}"/>
+<apex:includeScript value="{!$Resource.jqueryautocomplete1}"/>
+         
+         
+<div>
+    <div class="HeadingSmall">
+        <label for="CompanyName">Company Name</label>
+    </div>
+    <div class="LayoutBreakAfter">
+        <apex:actionFunction name="getDetails" action="{!getCompanyDetails}" reRender="companyDetailsPanel">
+            <apex:param name="one" value=""/>
+        </apex:actionFunction>                                                   
+        <fieldset class="LayoutSmallRowTop" onFocus="clearText(this)" onBlur="clearText(this)" title="Type Company Name to start auto lookup ">
+            <input id="CompanyNameAuto"  class="ac_input FormInputFull" /> 
+        </fieldset>
+    </div> 
+</div> 
+
+<apex:outputPanel id="companyDetailsPanel">
+    <apex:outputPanel rendered="{!isCompanySelected}" styleClass="TextSmall"  style="font-size:0.8em;line-height:12px">
+     <br/>
+<apex:outputText value="{!foundAccount.Name}" /><br/>
+<apex:outputText value="{!foundAccount.BillingStreet}"/><br/>
+<apex:outputText value="{!foundAccount.BillingCity}" />&nbsp;<apex:outputText value="{!foundAccount.BillingPostalCode}"/><br/>
+<apex:outputText value="{!foundAccount.BillingCountry}"/><br/>
+<apex:outputText value="{!foundAccount.Phone}"/><br/>
+<apex:outputText value="{!foundAccount.Website}"/>
+                                                    
+<br/><br/>
+<div class="TextSmall">
+<a href="javascript:void(null)" onclick="hidecompanydetails()">
+<span class="LayoutSmallGutterRight Icon IconSmallerClose">&nbsp;&nbsp;&nbsp;&nbsp;</span>Clear Company</a>
+</div>
+</apex:outputPanel>
+</apex:outputPanel>    
+</apex:form>
+
+
+<script>
+function hidecompanydetails()
+               {
+               companyExists = false;
+               jQuery("#gonext").text('Submit Registration') ;
+               document.getElementById('CompanyNameAuto').value = "";
+               document.getElementById('{!$Component.companyDetailsPanel}').style.display = 'none';
+               return;
+               
+               }            
+       
+        
+var jQuery = jQuery.noConflict();
+        
+        jQuery(document).ready(function()
+        {                    
+            
+            document.getElementById('{!$Component.companyDetailsPanel}').style.display = 'none';           
+            jQuery("#CompanyNameAuto").autocomplete("{!$Page.LC_AccountSearch}");           
+            jQuery('#CompanyNameAuto').result(function(event, data, formatted) { 
+            if(formatted!='No Match Found - Create New')
+            {
+            var str = formatted;            
+            var t1 = str.indexOf("display:none'>") ;
+            var t2 =str.indexOf("</div>");         
+            var reqId = str.substring(t1+14,t2);
+            var t3 = str.indexOf("<div style");
+            document.getElementById('CompanyNameAuto').value = str.substring(0,t3);
+            document.getElementById('newReg').style.display = 'none';
+            jQuery("#gonext").text('Add to Existing Registration') ;
+            jQuery("#CompanyNameAuto").removeClass('formInput-error');
+            companyExists = true;
+            companyDoesNotExists = false;
+            getDetails(reqId);
+            }
+            else
+            companyNotFound();
+            });
+            
+            }); 
+  </script>                    
+</apex:page>

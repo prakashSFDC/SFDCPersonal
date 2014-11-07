@@ -1,0 +1,65 @@
+<apex:page standardController="Example_Obj__c" showHeader="false" sidebar="false">
+  <!-- Begin Default Content REMOVE THIS -->
+  <h1>Congratulations</h1>
+    <p>    
+    <apex:form >
+     <apex:pageBlock Title="* Fields bordered in red indicate required fields" helptitle="Customer Help" helpUrl="{!$Resource.CustomerRegistrationHelp}">
+       <apex:pageBlockSection columns="1" collapsible="false">
+       <apex:outputtext value="Enter All The Fields" style="font-weight:bold;font-size:8pt"/>
+                </apex:pageblocksection>                
+         
+          <apex:pageBlockSection > 
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel value="Status" style="width:20%" />
+               <apex:inputField value="{!Example_Obj__c.RelationshipStatus__c}"  required="True" />  
+            </apex:pageBlockSectionItem>  
+
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel value="" style="width:20%" />
+             </apex:pageBlockSectionItem>  
+
+
+                  <apex:pageBlockSectionItem >
+               <apex:outputLabel value="FirstName" style="width:20%" />
+               <apex:inputField value="{!Example_Obj__c.FirrstName__c}"  required="True" />  
+           </apex:pageBlockSectionItem>           
+            
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel value="LastName" style="width:20%" />
+               <apex:inputField value="{!Example_Obj__c.LastName__c}"  required="True" />  
+           </apex:pageBlockSectionItem>  
+           
+           <apex:pageBlockSectionItem >
+               <apex:outputLabel value="Address" style="width:20%" />
+               <apex:inputField value="{!Example_Obj__c.Address__c}"  required="True" />  
+           </apex:pageBlockSectionItem>  
+
+    <apex:pageBlockSectionItem >       
+         <apex:outputLabel value="Email"/> 
+         <apex:inputField value="{!Example_Obj__c.Email__c}" required="True" />
+     </apex:pageBlockSectionItem>
+     
+    <apex:pageBlockSectionItem >       
+         <apex:outputLabel value="City"/> 
+         <apex:inputField value="{!Example_Obj__c.City__c}" required="True" />
+   </apex:pageBlockSectionItem>
+
+    <apex:pageBlockSectionItem >       
+         <apex:outputLabel value="Country"/> 
+         <apex:inputField value="{!Example_Obj__c.Country__c}" required="True" />
+   </apex:pageBlockSectionItem>
+
+
+
+   <apex:pageBlockSectionItem >       
+         <apex:outputLabel value="PhoneNo"/> 
+         <apex:inputField value="{!Example_Obj__c.PhoneNo__c}" required="True" />
+   </apex:pageBlockSectionItem>
+</apex:pageBlockSection>                                   
+        </apex:pageBlock>
+        <apex:commandButton value="save" action="!{save}"/>
+
+    </apex:form>
+    </p>
+  <!-- End Default Content REMOVE THIS -->
+</apex:page>

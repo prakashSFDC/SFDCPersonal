@@ -1,0 +1,21 @@
+<apex:page controller="AccSearch" sidebar="false" showHeader="false" standardStylesheets="false">
+
+<link REL="SHORTCUT ICON" HREF="{!URLFOR($Resource.Infosys)}"/>
+
+<apex:stylesheet value="{!URLFOR($Resource.styles, 'styles.css')}"/>
+
+   <h1>Congratulations</h1>  
+        <apex:form >
+        <p> <apex:outputLabel value="Link to Account:"></apex:outputLabel>  
+        <apex:inputField value="{!firstName.name}"/></p>
+        <p><apex:outputText >Account Name:</apex:outputText>
+   <apex:inputText value="{!accountname}" /></p>
+   <p><apex:commandButton action="{!doSearch}" value="Search"/> </p>
+<center>
+     <apex:dataTable value="{!accounts}" var="p">
+     <apex:column headerValue="Account Name"><apex:outputText value="{!p.name}"></apex:outputText></apex:column>
+     <apex:column headerValue="Phone no"> <apex:outputText value="{!p.phone}"></apex:outputText></apex:column>
+     </apex:dataTable>  
+</center>
+  </apex:form>
+  </apex:page>

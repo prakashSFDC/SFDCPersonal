@@ -1,0 +1,73 @@
+<apex:page Controller="Testwinter14forWizard" wizard="true" >
+  <!-- Begin Default Content REMOVE THIS -->
+  
+  <style type="text/css">
+        .dateFormat{
+           visibility:hidden;
+        }
+        
+         .requiredField{
+            background-color: #C00;
+            position: absolute;
+            left: -4px;
+            width: 3px;
+            top: 1px;
+            bottom: 1px;
+        }
+        
+        .requiredInput{
+            position: relative;
+            height: 100%;
+            white-space:nowrap;
+        }                         
+    </style>
+  <h1>Congratulations</h1>
+  This is your new Page
+  <apex:form >
+  <apex:pageBlock >
+  <apex:pageBlockSection columns="1">
+   <apex:pageBlockSectionItem >
+     <apex:outputLabel value="Whose form are you using for this agreement Whose form are you using for this agreement?Whose form are you using for this agreement" for="initiationType" />
+         <apex:actionRegion >                            
+          <div class="requiredInput">
+           <div class="requiredField"></div>
+          <apex:selectRadio value="{!testValue}">             
+             <apex:selectOption itemValue="Bangalore" itemLabel="Bangalore" />
+             <apex:selectOption itemValue="Hyderabad" itemLabel="Hyderabad" /> 
+             <apex:selectOption itemValue="Chennai" itemLabel="Chennai" /> 
+         </apex:selectRadio>
+          </div>
+         </apex:actionRegion>
+     </apex:pageBlockSectionItem>
+     
+     <apex:pageBlockSectionItem >
+     <apex:outputLabel value="Whose form are you using for this agreement Whose form are you using for this agreement?Whose form are you using for this agreement" for="initiationType" />
+         <apex:actionRegion >                            
+          <div class="requiredInput">
+           <div class="requiredField"></div>
+          <apex:selectRadio value="{!testValue}">             
+             <apex:selectOption itemValue="Bangalore" itemLabel="Bangalore" />
+             <apex:selectOption itemValue="Hyderabad" itemLabel="Hyderabad" /> 
+             <apex:selectOption itemValue="Chennai" itemLabel="Chennai" /> 
+         </apex:selectRadio>
+          </div>
+         </apex:actionRegion>
+     </apex:pageBlockSectionItem>
+     
+     <apex:pageBlockSectionItem >
+     <apex:outputLabel value="Whose form are you using for this agreement Whose form are you using for this agreement?Whose form are you using for this agreement" for="initiationType" />
+         <apex:actionRegion >                            
+          <div class="requiredInput">
+           <div class="requiredField"></div>
+          <apex:selectRadio value="{!testValue}">             
+             <apex:selectOption itemValue="Bangalore" itemLabel="Bangalore" />
+             <apex:selectOption itemValue="Hyderabad" itemLabel="Hyderabad" /> 
+             <apex:selectOption itemValue="Chennai" itemLabel="Chennai" /> 
+         </apex:selectRadio>
+          </div>
+         </apex:actionRegion>
+     </apex:pageBlockSectionItem>
+     </apex:pageBlockSection>
+     </apex:pageBlock>
+     </apex:form>
+</apex:page>

@@ -1,0 +1,11 @@
+<apex:page standardController="Account" sidebar="false">
+Hello {! $User.FirstName}!
+<p>You are viewing the {! account.name} account.</p>
+<p>Here’s the owner name field: {! account.owner.name}</p>
+<apex:pageBlock title="Custom Output">
+<apex:pageBlockSection title="Custom Section Title" >
+<apex:outputfield value="{!account.name}"/>
+<apex:outputfield value="{!account.owner.name}"/>
+</apex:pageBlockSection>
+</apex:pageBlock>
+</apex:page>

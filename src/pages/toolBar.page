@@ -1,0 +1,21 @@
+<apex:page controller="MyController" showHeader="false" sidebar="false">
+    <apex:toolbar id="theToolbar">
+           <apex:toolbarGroup itemSeparator="line" id="toobarGroupLinks">
+           </apex:toolbarGroup>
+        <apex:toolbarGroup itemSeparator="line" location="right" id="toolbarGroupForm">
+             <apex:form id="theForm">             
+                <apex:inputText id="theInputText">Enter Text</apex:inputText>
+                <apex:commandLink action="(!accountClicked)" value="search" id="theCommandLink"/>            
+             </apex:form> 
+        </apex:toolbarGroup>
+    </apex:toolbar>
+    <apex:form >
+     <apex:dataList value="{! myaccounts}" var="acct">
+        <apex:commandlink action="{!accountClicked}" rerender="ContactDetail">
+            <apex:outputText value="{! acct.name}" />
+            <apex:param name="id" value="{! acct.Id}" assignTo="{!selectedAccount}"/>
+        </apex:commandLink>
+    </apex:dataList>  
+    </apex:form>
+   
+</apex:page>

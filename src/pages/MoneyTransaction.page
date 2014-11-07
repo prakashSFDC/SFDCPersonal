@@ -1,0 +1,69 @@
+<apex:page showHeader="false" sidebar="false" controller="MoneyTransactionController">
+ <style>
+        .forms.columnar label {
+          float: left;
+          width: 325px;
+          text-align: right;
+          margin-right: 20px;
+          font-size: 15px; 
+         
+        }
+        .forms.columnar1 label {
+          float: left;
+          width: 200px;
+          text-align: left;
+          margin-left: 0px;
+          font-size: 75%; 
+        }
+                        
+</style><br/><br/><br/>
+<apex:form styleClass="forms columnar" style="width:985px; margin:0 auto; position: relative;top: 80px" id="theForm">        
+        <apex:pageBlock id="idBlock" >
+            <apex:pageBlockSection title="WELCOME TO BANK APPLICATION" columns="1" collapsible="false" >
+            <div id="">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Customer Name:" />
+                    <apex:selectList value="{!customerToProcess}">
+                        <apex:selectOptions value="{!Customers}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Transaction Type:"/>
+                    <apex:selectList id="tType" value="{!transType}" size="1">
+                        <apex:selectOption itemValue="Dr." itemLabel="DEBIT"/>
+                        <apex:selectOption itemValue="Cr." itemLabel="CREDIT"/>                       
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Amount:"/>
+                    <apex:inputText value="{!amount}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Transaction Date:"/>
+                    <apex:inputText value="{!transactionDate}"/>
+                </apex:pageBlockSectionItem>  
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Description:"/>
+                    <apex:inputTextArea value="{!description}"/>
+                </apex:pageBlockSectionItem>               
+            </div>
+        </apex:pageBlockSection>        
+        <apex:commandButton value="Save" action="{!doSave}" style="width:80px;" reRender="matchTable" status="searchStatus"/> &nbsp; &nbsp; &nbsp; &nbsp;
+        <apex:commandButton value="Cancel" action="{!docancel}" status="searchStatus" style="width:80px;" reRender="matchTable,idBlock"/>
+       <apex:outputpanel >
+        <apex:actionstatus id="searchStatus">
+            <apex:facet name="start">
+                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                       height: 100%;opacity:0.65;width:100%;"> 
+                    <div class="waitingHolder" style="top: 230px; width: 91px;">
+                        <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                        <span class="waitingDescription">Please Wait...</span>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionstatus>
+    </apex:outputpanel> 
+    </apex:pageblock>
+    </apex:form>
+
+</apex:page>

@@ -1,0 +1,39 @@
+<apex:page standardController="Account" extensions="Acc" >
+  <apex:form id="test" >
+  <!-- Begin Default Content REMOVE THIS -->
+  <h1>Congratulations</h1><br></br>
+  <br></br>
+  
+  <!-- End Default Content REMOVE THIS -->
+  
+         
+  
+   Rating:<apex:selectList value="{!Account.Rating}" id="rating" size="1">  
+           
+          <apex:selectoptions value="{!Rating}" />   
+            <apex:actionFunction name="CheckValue" reRender="sla"/>
+          </apex:selectList> 
+
+             <br></br>SLA No:<apex:inputField value="{!Account.SLASerialNumber__c}" id="sla" rendered="{!viewSLA}" />
+  
+  
+
+<apex:commandButton value="BACK" onclick="myMethod()"/>
+
+ </apex:form>
+ 
+ 
+ <script>
+ function myMethod()
+ {
+   window.close();
+ 
+ 
+ }
+ 
+ 
+ 
+ </script>
+ 
+ 
+</apex:page>

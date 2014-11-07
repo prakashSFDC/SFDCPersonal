@@ -1,0 +1,27 @@
+<apex:page controller="dataTableCon" id="thePage">
+        <apex:form >
+        <apex:pageBlock >
+        <apex:pageBlockTable value="{!accounts}" var="abc" id="theTable"> 
+                <apex:column >
+                        <apex:facet name="header">Name</apex:facet>                       
+                        <apex:outputText value="{!abc.name}"/>
+                </apex:column>
+
+                <apex:column >
+                        <apex:facet name="header">Owner</apex:facet>
+                        <apex:outputText value="{!abc.owner.name}"/>
+                </apex:column>
+                
+                <apex:column >
+                        <apex:facet name="header">Mobile</apex:facet>
+                        <apex:outputText value="{!abc.phone}"/>
+                </apex:column>
+                
+                <apex:column >
+                        <apex:facet name="header">Picklist</apex:facet>
+                        <apex:inputField value="{!abc.AccountSource}"/>
+                </apex:column>
+        </apex:pageblockTable>
+        </apex:pageBlock>
+        </apex:form>
+</apex:page>

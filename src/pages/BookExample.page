@@ -1,0 +1,14 @@
+<apex:page standardController="Book__c" extensions="bookExtension" > 
+
+    <br/>
+    <apex:pageBlock title="{!Book__c.Name}">
+        <apex:repeat value="{!availableFields}" var="field">
+
+            <h2><apex:outputText value="{!$ObjectType['Book__c'].Fields[field].Label}"/></h2>
+            <br/>
+            <apex:outputText value="{!Book__c[field]}" /><br/><br/>
+
+        </apex:repeat>
+    </apex:pageBlock>
+
+</apex:page>

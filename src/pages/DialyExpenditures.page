@@ -1,0 +1,145 @@
+<apex:page showHeader="false" sidebar="false" standardController="Expenditures__c" Extensions="DialyExpendituresCtrl">
+<script language="javascript" type="text/javascript"> 
+function closeWindow() { 
+    window.open('','_parent',''); 
+window.close(); 
+}
+</script>  
+ 
+ <style>
+        .forms.columnar label {
+          float: left;
+          width: 325px;
+          text-align: right;
+          margin-right: 20px;
+        }
+        .forms.columnar1 label {
+          float: left;
+          width: 200px;
+          text-align: left;
+          margin-left: 0px;
+        }
+                        
+    </style><br/><br/><br/>
+  <!-- Begin Default Content REMOVE THIS -->     
+<apex:form styleClass="forms columnar" style="width:985px; margin:0 auto" id="theForm">        
+        <apex:pageBlock id="idBlock"  title="Welcome Surekha and Prakash">  
+        <apex:pageMessages id="errorPage"/>      
+            <apex:commandButton value="New Expenditure" onclick="" action="{!doCreate}" style="width:100px;" reRender="theForm" status="searchStatus"/> &nbsp; &nbsp; &nbsp; &nbsp;
+            <apex:commandButton value="Transactions" action="{!doModify}" status="searchStatus" style="width:80px;" reRender="theForm"/> &nbsp; &nbsp; &nbsp; &nbsp;           
+            <apex:outputpanel rendered="{!displayFlag}">
+            <apex:pageBlockSection title="Daily Expenses Application" columns="1" collapsible="false" rendered="{!displayFlag}">                
+                <div>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Owner of the Expense:"/>                   
+                        <apex:inputField value="{!Expenditures__c.Expense_Owner__c}"/>                                     
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Expense Type:"/>
+                    <apex:inputField value="{!Expenditures__c.Expense_Type__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Amount:"/>
+                    <apex:inputField value="{!Expenditures__c.Expense_Amount__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Expense Date:"/>
+                    <apex:inputField value="{!Expenditures__c.Expenditure_Date__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Expense Description:"/>
+                    <apex:inputField value="{!Expenditures__c.Expense_Description__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Valid Expense(Not for Testing):"/>
+                    <apex:inputField value="{!Expenditures__c.isValid__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="Upload File" for="file"/>
+                  <apex:inputFile value="{!attachment.body}" filename="{!attachment.name}" id="file"/>
+                </apex:pageBlockSectionItem>
+                
+                </div>
+                </apex:pageBlockSection> 
+                <apex:commandButton value="Save" onclick="" action="{!doSave}" style="width:100px;"  status="searchStatus"/>
+                <apex:commandButton value="Cancel" action="{!doCancel}" status="searchStatus" style="width:80px;" reRender="theForm"/>
+            <apex:outputpanel />
+                <apex:actionstatus id="searchStatus">
+                    <apex:facet name="start">
+                        <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                               height: 100%;opacity:0.65;width:100%;"> 
+                            <div class="waitingHolder" style="top: 230px; width: 91px;">
+                                <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                                <span class="waitingDescription">Please Wait...</span>
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionstatus>
+            </apex:outputpanel>
+            <apex:outputpanel rendered="{!displayTrasFlag}">
+            <apex:pageBlockSection title="Daily Expenses Application" columns="1" collapsible="false" rendered="{!displayTrasFlag}">                
+                <div>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Owner of the Expense:"/>                   
+                        <apex:inputField value="{!Expenditures__c.Expense_Owner__c}"/>                                     
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Expense Type:"/>
+                    <apex:inputField value="{!Expenditures__c.Expense_Type__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                     <apex:outputLabel value="From Date:"/>             
+                    <apex:inputText value="{!fromDate}" size="10" id="idFromDate" onfocus="DatePicker.pickDate(false, this , false);" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="To Date:"/>
+                    <apex:inputText value="{!toDate}" size="10" id="idToDate" onfocus="DatePicker.pickDate(false, this , false);" /> 
+                </apex:pageBlockSectionItem>
+                
+                </div>
+                </apex:pageBlockSection> 
+                <apex:commandButton value="Search" onclick="" action="{!doSearch}" style="width:100px;" reRender="information" />               
+            <apex:outputpanel />
+            </apex:outputpanel> 
+            </apex:pageBlock>
+            
+         <apex:pageBlock id="information" >              
+            <apex:pageBlockSection title="Expenses History" columns="1" collapsible="false" rendered="{!flagShowHistory}">          
+                <div>
+                <apex:pageBlockTable value="{!expendituresList}" var="exp">
+                    <apex:column >
+                        <apex:facet name="header">Owner</apex:facet>
+                        <apex:outputText value="{!exp.Expense_Owner__c}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Expense Type</apex:facet>
+                        <apex:outputText value="{!exp.Expense_Type__c}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Expense Date</apex:facet>
+                        <apex:outputField value="{!exp.Expenditure_Date__c}" />
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Amount</apex:facet>
+                        <apex:outputText value="{!exp.Expense_Amount__c}" />
+                    </apex:column> 
+                </apex:pageBlockTable>      
+                </div>                
+            </apex:pageBlockSection> 
+            <apex:pageBlockSection title="Expenses History" columns="1" collapsible="false" rendered="{!flagShowHistoryError}">
+                No Records Avialble For this time Period
+           </apex:pageBlockSection>                             
+            <apex:outputpanel />
+    
+        </apex:pageBlock>
+</apex:form>    
+</apex:page>

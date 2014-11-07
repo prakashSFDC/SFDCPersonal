@@ -1,0 +1,17 @@
+<apex:page sidebar="false">
+{! $User.FirstName} {! $User.LastName}
+<p> Today's Date is {! TODAY() } </p>
+<apex:form >
+<apex:pageBlock title="A Block Title">
+<apex:pageBlockSection title="A Section Title">
+    I'm three components deep!
+</apex:pageBlockSection>
+<apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Save"/>
+</apex:pageBlockButtons>
+<apex:pageBlockSection title="Another Section Title">
+    I'm four components deep!
+</apex:pageBlockSection>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

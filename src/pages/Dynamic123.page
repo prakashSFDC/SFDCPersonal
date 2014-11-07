@@ -1,0 +1,27 @@
+<apex:page showHeader="false"  sidebar="false"  Controller="ContactSearchController">
+  <apex:form >
+            <script type="text/javascript">
+      function doSearch() {
+        searchServer(
+                    document.getElementById("accountName").value;
+                   );
+      }
+</script>
+<apex:actionFunction name="searchServer" action="{!runSearch}" rerender="results,debug,errors">
+                   <apex:param name="accountName" value="" />
+                </apex:actionFunction>
+
+<table cellpadding="2" cellspacing="2">
+        <tr>
+        <td style="font-weight:bold;">Account<br/>
+        <input type="text" id="accountName" onkeyup="doSearch();"/>
+        </td>
+      </tr>
+   </table>
+     <apex:dataTable value="{!accounts}" var="account" >
+                     <apex:column >
+                        <apex:outputText value="{!account.name}"/>
+                </apex:column>
+           </apex:dataTable>
+ </apex:form>
+</apex:page>

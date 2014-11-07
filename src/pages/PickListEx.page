@@ -1,0 +1,36 @@
+<apex:page standardController="Account" extensions="PickListExCtrl">  
+<apex:form >
+<apex:pageBlock id="options" title="Reasearch on Picklist" >
+    <apex:pageBlockSection id="global" title="Picklist Example" columns="1">
+        
+        <apex:pageBlockSectionItem id="metalLevel1">
+            <apex:outputLabel value="Metal Level - Standard" for="metalLevel1" />
+            <apex:inputField value="{!Account.Metal_Level__c}"/>
+        </apex:pageBlockSectionItem>
+        
+        <apex:pageBlockSectionItem id="metalLevel2">
+            <apex:outputLabel value="Metal Level - Page" for="metalLevel2" />
+            <apex:selectList size="1" value="{!picklist}">
+                <apex:selectOption itemvalue="Platinum" itemLabel="Platinum"/>
+                <apex:selectOption itemvalue="Gold" itemLabel="Gold"/>
+                <apex:selectOption itemvalue="Silver" itemLabel="Silver"/>
+            </apex:selectList>
+        </apex:pageBlockSectionItem>
+        
+        <apex:pageBlockSectionItem id="metalLevel3">
+            <apex:outputLabel value="Metal Level - Class" for="metalLevel3" />
+            <apex:selectList value="{!metalLevel}" id="metalL1" size="1">
+                <apex:selectOptions value="{!MetalLevels}" />
+            </apex:selectList>
+        </apex:pageBlockSectionItem>
+        
+        <apex:pageBlockSectionItem id="metalLevel4">
+            <apex:outputLabel value="Metal Level - Schema" for="metalLevel4" />
+            <apex:selectList value="{!metalLevel2}" id="metalL2" size="1">
+                <apex:selectOptions value="{!MetalLevels2}" />
+            </apex:selectList>
+        </apex:pageBlockSectionItem>
+    </apex:pageBlockSection> 
+ </apex:pageBlock>   
+</apex:form> 
+</apex:page>
